@@ -9,16 +9,16 @@ module Services.Batalha where
     -- Básico de Combate
 
     combatePorElemento:: Carta -> Carta -> String
-    combatePorElemento (Carta elJogador vJogador _ _) (Carta elBot vBot _ _)
-        | prioridadeElemento elJogador elBot = "Vitória do jogador!"
-        | prioridadeElemento elBot elJogador = "Jogador perdeu!"
+    combatePorElemento (Carta eleJogador vJogador _ _) (Carta eleBot vBot _ _)
+        | prioridadeElemento eleJogador eleBot = "W"
+        | prioridadeElemento eleBot eleJogador = "L"
         | otherwise = combatePorValor vJogador vBot
 
     combatePorValor:: Int -> Int -> String
     combatePorValor valorJogador valorBot
-        | valorJogador > valorBot = "Vitória do jogador"
-        | valorBot > valorJogador = "Jogador perdeu"
-        | otherwise = "empate"
+        | valorJogador > valorBot = "W"
+        | valorBot > valorJogador = "L"
+        | otherwise = "D"
 
     -- Aplicar poder na carta
 
