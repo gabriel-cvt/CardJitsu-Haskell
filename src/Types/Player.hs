@@ -1,23 +1,37 @@
-module Types.Player where
-    import Types.Carta
-    import Types.Faixa
+module Types.Player (
+    Player (..),
+    getNome,
+    getFaixa,
+    upFaixa,
+    newPlayer,
+    getProgresso
+) where
+import Types.Carta
+import Types.Faixa
 
-    data Player = Player String [Carta] Faixa Bool deriving (Show)
+-- Data do jogador
+-- String: Nome
+-- [Carta]: deck de cartas
+-- Faixa: cor da faixa/progresso do jogador
+-- Int: Partidas jogadas
+-- Int: Progresso inicial
+data Player = Player String [Carta] Faixa Int Int deriving (Show, Read)
 
 
+-- pegar o nome do jogador
+getNome:: Player -> String
+getNome (Player nomePlayer _ _ _ _) = nomePlayer
 
-    -- método provisório
-    getNome:: Player -> String
-    getNome (Player nomePlayer _ _ _ ) = nomePlayer
+-- pegar a faixa atual do jogador
+getFaixa:: Player -> Faixa
+getFaixa (Player _ _ faixaPlayer _ _) = faixaPlayer
 
-    -- método provisório
-    getFaixa:: Player -> Faixa
-    getFaixa (Player _ _ faixaPlayer _ )= faixaPlayer
-    
-    -- Pega sucessor da faixa por enum
-    upFaixa:: Player -> Player 
-    upFaixa (Player nomePlayer cartas faixaPlayer mascara) = Player nomePlayer cartas (succ faixaPlayer) mascara
+getProgresso:: Player -> Int
+getProgresso (Player _ _ _ _ progresso) = progresso
 
-    -- não completo
-    toString:: Player -> String
-    toString (Player nomePlayer _ faixaPlayer mascaraNinja) = "Ninja: " ++ nomePlayer ++ "\nFaixa Atual: " ++ show faixaPlayer ++ "\nFaixas Adquiridas: "
+-- Método para aumentar a faixa do jogador
+upFaixa:: Player -> Player 
+upFaixa (Player nomePlayer cartas faixaPlayer partidas progresso) = Player nomePlayer cartas (succ faixaPlayer) partidas progresso
+
+newPlayer :: String -> Player
+newPlayer nome = Player nome [] Branca 0 0

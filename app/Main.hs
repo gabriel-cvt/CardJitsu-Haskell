@@ -1,6 +1,29 @@
 module Main (main) where
 
-import Lib
+import Util.Lib
+import System.Console.ANSI
+import Controllers.ControleSalvamentos
 
 main :: IO ()
-main = someFunc
+main = start
+
+start :: IO()
+start = do
+    clearScreen
+    pressionarTecla
+    menu
+
+menu :: IO()
+menu = do
+    clearScreen
+    putStrLn "Bem vindo ao Dojo!"
+    putStrLn "Deseja carregar um jogo ou começar um novo?"
+    putStrLn "1 - Começar novo jogo"
+    putStrLn "2 - Carregar jogo"
+    
+    input <- getLine
+    clearScreen
+    case input of
+        "1" -> novoJogo
+        "2" -> carregarJogo
+        _ -> putStrLn "Opção inválida, escolha novamente!" >> pressionarTecla >> menu

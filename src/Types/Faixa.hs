@@ -1,3 +1,5 @@
-module Types.Faixa where
+module Types.Faixa (
+    Faixa (..)
+) where
 
-    data Faixa = Branca | Azul | Roxa | Marrom | Preta deriving (Eq, Show, Enum)
+data Faixa = Branca | Azul | Roxa | Marrom | Preta deriving (Eq, Show, Enum, Read)

@@ -25,12 +25,15 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      Controllers.ControleFases
+      Controllers.ControleSalvamentos
       Services.Batalha
+      Services.Salvamentos
       Types.Carta
       Types.Elemento
       Types.Faixa
       Types.Player
+      Util.Lib
   other-modules:
       Paths_CardJitsu_Haskell
   autogen-modules:
@@ -39,7 +42,8 @@ library
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
-      base >=4.7 && <5
+      ansi-terminal
+    , base >=4.7 && <5
   default-language: Haskell2010
 
 executable CardJitsu-Haskell-exe
@@ -53,6 +57,7 @@ executable CardJitsu-Haskell-exe
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       CardJitsu-Haskell
+    , ansi-terminal
     , base >=4.7 && <5
   default-language: Haskell2010
 
@@ -68,5 +73,6 @@ test-suite CardJitsu-Haskell-test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       CardJitsu-Haskell
+    , ansi-terminal
     , base >=4.7 && <5
   default-language: Haskell2010
