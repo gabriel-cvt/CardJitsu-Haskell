@@ -9,9 +9,11 @@ version:        0.1.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/CardJitsu-Haskell#readme>
 homepage:       https://github.com/githubuser/CardJitsu-Haskell#readme
 bug-reports:    https://github.com/githubuser/CardJitsu-Haskell/issues
-author:         Author name here
+author:         David Joshua Galvíncio de Souza <david.joshua.galvincio.souza@ccc.ufcg.edu.br>,
+Gabriel Cavalcanti Araujo <gabriel.cavalcanti.araujo@ccc.ufcg.edu.br>
+
 maintainer:     example@example.com
-copyright:      2024 Author name here
+copyright:      2024 David Gabriel
 license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
@@ -29,6 +31,7 @@ library
       Controllers.ControleSalvamentos
       Services.Batalha
       Services.Salvamentos
+      Types.Baralho
       Types.Carta
       Types.Elemento
       Types.Faixa
@@ -44,6 +47,9 @@ library
   build-depends:
       ansi-terminal
     , base >=4.7 && <5
+    , random
+    , tasty
+    , tasty-hunit
   default-language: Haskell2010
 
 executable CardJitsu-Haskell-exe
@@ -59,6 +65,9 @@ executable CardJitsu-Haskell-exe
       CardJitsu-Haskell
     , ansi-terminal
     , base >=4.7 && <5
+    , random
+    , tasty
+    , tasty-hunit
   default-language: Haskell2010
 
 test-suite CardJitsu-Haskell-test
@@ -75,4 +84,7 @@ test-suite CardJitsu-Haskell-test
       CardJitsu-Haskell
     , ansi-terminal
     , base >=4.7 && <5
+    , random
+    , tasty
+    , tasty-hunit
   default-language: Haskell2010
