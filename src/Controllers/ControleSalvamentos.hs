@@ -2,7 +2,6 @@ module Controllers.ControleSalvamentos (
     novoJogo,
     inicializaJogador,
     carregarJogo,
-    carregarFase,
     verificarFaixa
 ) where
 
@@ -22,7 +21,8 @@ novoJogo = do
     putStrLn "Qual é o seu nome?"
     name <- getLine
     inicializaJogador name
-    faseInicial
+    carregarFase
+
 -- Cria o jogador e salva ele pela função salvarJogador
 inicializaJogador :: String -> IO()
 inicializaJogador nomeJogador = do
@@ -41,14 +41,6 @@ carregarJogo = do
         pressionarTecla
         clearScreen
         novoJogo
-
--- Função que leva para o carregamento da fase na função mais específica carregarFaseJogador
-carregarFase :: IO()
-carregarFase = do
-    putStrLn "Carregando fase..."
-    pressionarTecla
-    clearScreen
-    carregarFaseJogador
 
 -- Função para checar a faixa do jogador
 verificarFaixa :: IO()

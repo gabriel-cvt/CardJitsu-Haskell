@@ -1,1 +1,1 @@
-Player "a" [] Branca 0 0
+Player "ninja mascarado ggwp" [] Branca 0 1

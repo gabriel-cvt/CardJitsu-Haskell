@@ -9,7 +9,7 @@ import System.Random (randomRIO)
 
 gerarCartasElemento :: Elemento -> [Carta]
 gerarCartasElemento elemento =
-    [Carta elemento valor poder "" | (valor, poder) <- zip [1..12] poderes]
+    [Carta elemento valor poder | (valor, poder) <- zip [1..12] poderes]
     where
         poderes = replicate 12 Null
 

@@ -2,34 +2,36 @@ module Services.Batalha (
     combatePorElemento,
     combatePorValor,
     aplicarMaisDois,
-    aplicarMenosDois
+    aplicarMenosDois,
+    VencedorRodada (..)
 ) where
     
 import Types.Carta
 import Types.Elemento
 
+data VencedorRodada = JOGADOR | ADVERSARIO | NENHUM deriving (Eq, Show)
 
 -- Funções de cartas em Batalha!
 -- OBS: Acesso de valores feitos por pattern matching
 
 -- Saída não terminada
-combatePorElemento:: Carta -> Carta -> String
-combatePorElemento (Carta elJogador vJogador _ _) (Carta elBot vBot _ _)
-    | prioridadeElemento elJogador elBot = "Vitória do jogador!"
-    | prioridadeElemento elBot elJogador = "Jogador perdeu!"
+combatePorElemento:: Carta -> Carta -> VencedorRodada
+combatePorElemento (Carta elJogador vJogador _ ) (Carta elBot vBot _ )
+    | prioridadeElemento elJogador elBot = JOGADOR
+    | prioridadeElemento elBot elJogador = ADVERSARIO
     | otherwise = combatePorValor vJogador vBot
 
 -- Saída não terminada
-combatePorValor:: Int -> Int -> String
+combatePorValor:: Int -> Int -> VencedorRodada
 combatePorValor valorJogador valorBot
-    | valorJogador > valorBot = "Vitória do jogador"
-    | valorBot > valorJogador = "Jogador perdeu"
-    | otherwise = "empate"
+    | valorJogador > valorBot = JOGADOR
+    | valorBot > valorJogador = ADVERSARIO
+    | otherwise = NENHUM
 
 -- Aplicar poder na carta
 
 aplicarMaisDois:: Carta -> Carta
-aplicarMaisDois (Carta elemento valor poder nome) = Carta elemento (valor + 2) poder nome
+aplicarMaisDois (Carta elemento valor poder) = Carta elemento (valor + 2) poder
 
 aplicarMenosDois:: Carta -> Carta
-aplicarMenosDois (Carta elemento valor poder nome) = Carta elemento (valor - 2) poder nome
+aplicarMenosDois (Carta elemento valor poder) = Carta elemento (valor - 2) poder

@@ -28,8 +28,11 @@ source-repository head
 library
   exposed-modules:
       Controllers.ControleFases
+      Controllers.ControleJogo
       Controllers.ControleSalvamentos
+      Controllers.Fases
       Services.Batalha
+      Services.Jogo
       Services.Salvamentos
       Types.Baralho
       Types.Carta
