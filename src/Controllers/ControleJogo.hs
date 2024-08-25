@@ -14,22 +14,28 @@ import Services.Jogo
 import Controllers.ControleFases
 import System.Exit (exitSuccess)
 
+-- Controller geral do jogo, que leva para a função do jogo, como é uma MD3
+-- Obrigatoriamente existirá duas partidas, cada partida retornará o vencedor (PLAYER/BOT)
+-- Se for o mesmo vencedor, então ele já ganha e verifica quem venceu, se não vai pra última
 controllerJogo :: Player -> String -> IO()
 controllerJogo jogador nomeBot = do
-    let primeiroVencedor = jogo jogador nomeBot
-    let segundoVencedor = jogo jogador nomeBot
-    if primeiroVencedor == segundoVencedor
-    then verificaVencedor primeiroVencedor nomeBot jogador
+    let primeiraRodada = jogo jogador nomeBot
+    let segundaRodada = jogo jogador nomeBot
+    if primeiraRodada == segundaRodada
+    then verificaVencedor primeiraRodada nomeBot jogador
     else do
         putStrLn "Pelo visto a batalha está dificíl, será necessário um desempate!"
         let ultimaRodada = jogo jogador nomeBot
         verificaVencedor ultimaRodada nomeBot jogador
 
+-- Verifica quem foi o vencedor da partida, utiliza a data VencedorPartida
 verificaVencedor :: VencedorPartida -> String -> Player -> IO()
 verificaVencedor vencedor nomeBot jogador = do
     if vencedor == PLAYER then jogadorGanhou jogador nomeBot
     else jogadorPerdeu jogador nomeBot
 
+
+-- Quando o jogo ganha, ele será recompensado upando de faixa e passará para próxima fase
 jogadorGanhou :: Player -> String -> IO ()
 jogadorGanhou jogador nomeBot = do
     putStrLn "Parabéns pela vitória, ninja\n"
@@ -39,6 +45,9 @@ jogadorGanhou jogador nomeBot = do
     salvarJogador player
     passarFaseJogador
 
+
+-- Quando o jogador perde a partida para o BOT, a 2 opção deve ser Voltar para o DOJO, mas não consegui
+-- resolver o erro de import cíclico, então deixei assim e vou resolver depois
 jogadorPerdeu :: Player -> String -> IO ()
 jogadorPerdeu jogador nomeBot = do
     clearScreen

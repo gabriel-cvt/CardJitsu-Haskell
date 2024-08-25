@@ -17,5 +17,3 @@ pressionarTecla = do
 -- Caminho onde vai salvar o jogador
 pathPlayer :: String
 pathPlayer = "./src/Repositories/ninja.txt"
-
-
