@@ -3,6 +3,7 @@ module Types.Player (
     getNome,
     getFaixa,
     upFaixa,
+    upPartidasJogadas,
     newPlayer,
     getProgresso
 ) where
@@ -32,6 +33,9 @@ getProgresso (Player _ _ _ _ progresso) = progresso
 -- Método para aumentar a faixa do jogador
 upFaixa:: Player -> Player 
 upFaixa (Player nomePlayer cartas faixaPlayer partidas progresso) = Player nomePlayer cartas (succ faixaPlayer) partidas progresso
+
+upPartidasJogadas :: Player -> Player
+upPartidasJogadas (Player nomePlayer cartas faixaPlayer partidas progresso) = Player nomePlayer cartas faixaPlayer (succ partidas) progresso
 
 newPlayer :: String -> Player
 newPlayer nome = Player nome [] Branca 0 0

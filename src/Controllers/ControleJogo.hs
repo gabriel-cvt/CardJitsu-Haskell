@@ -31,8 +31,9 @@ controllerJogo jogador nomeBot = do
 -- Verifica quem foi o vencedor da partida, utiliza a data VencedorPartida
 verificaVencedor :: VencedorPartida -> String -> Player -> IO()
 verificaVencedor vencedor nomeBot jogador = do
-    if vencedor == PLAYER then jogadorGanhou jogador nomeBot
-    else jogadorPerdeu jogador nomeBot
+    let jogadorPartidaIncrementada = upPartidasJogadas jogador
+    if vencedor == PLAYER then jogadorGanhou jogadorPartidaIncrementada nomeBot
+    else jogadorPerdeu jogadorPartidaIncrementada nomeBot
 
 
 -- Quando o jogo ganha, ele será recompensado upando de faixa e passará para próxima fase
@@ -41,10 +42,9 @@ jogadorGanhou jogador nomeBot = do
     putStrLn "Parabéns pela vitória, ninja\n"
     let faixaAtual = getFaixa jogador
     putStrLn ("Após derrotar " ++ nomeBot ++ " bravamente, você conquistou a faixa " ++ show (succ faixaAtual) ++ "!! \n")
-    let player = upFaixa jogador
-    salvarJogador player
+    let jogadorAtualizado = upFaixa jogador
+    salvarJogador jogadorAtualizado
     passarFaseJogador
-
 
 -- Quando o jogador perde a partida para o BOT, a 2 opção deve ser Voltar para o DOJO, mas não consegui
 -- resolver o erro de import cíclico, então deixei assim e vou resolver depois
