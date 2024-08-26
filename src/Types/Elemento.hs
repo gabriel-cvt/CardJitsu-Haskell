@@ -3,9 +3,14 @@ module Types.Elemento (
     prioridadeElemento
 ) where
 
-data Elemento = Fogo | Agua | Neve deriving (Eq, Show, Read)
+data Elemento = Fogo | Agua | Neve deriving (Eq, Read)
 
-prioridadeElemento:: Elemento -> Elemento -> Bool
+instance Show Elemento where
+    show Fogo = "FOGO"
+    show Agua = "ÁGUA"
+    show Neve = "NEVE"
+
+prioridadeElemento :: Elemento -> Elemento -> Bool
 prioridadeElemento Fogo Neve = True
 prioridadeElemento Neve Agua = True
 prioridadeElemento Agua Fogo = True

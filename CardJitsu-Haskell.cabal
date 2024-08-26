@@ -36,6 +36,7 @@ library
       Services.Salvamentos
       Types.Baralho
       Types.Carta
+      Types.Deque
       Types.Elemento
       Types.Faixa
       Types.Player
