@@ -2,7 +2,7 @@ module Types.Deque (
     Deque,
     criarDeque,
     completarDeque,
-    jogar
+    jogarCarta
 ) where
 
 import Types.Carta
@@ -20,10 +20,10 @@ completarDeque (Deque cartas) baralhoAtual =
     let (carta, novoBaralho) = pegarCarta baralhoAtual
     in case carta of
         Nothing -> (Deque cartas, novoBaralho)
-        Just c  -> (Deque (cartas ++ [c]), novoBaralho)
+        Just c  -> (Deque (take 5 (cartas ++ [c])), novoBaralho)
 
-jogar :: Int -> Deque -> (Maybe Carta, Deque)
-jogar escolha (Deque cartas)
+jogarCarta :: Int -> Deque -> (Maybe Carta, Deque)
+jogarCarta escolha (Deque cartas)
     | escolha >= 0 && escolha < length cartas = 
         let (antes, carta:depois) = splitAt escolha cartas
         in (Just carta, Deque (antes ++ depois))

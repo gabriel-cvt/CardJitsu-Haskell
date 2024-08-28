@@ -13,13 +13,10 @@ import System.Random (randomRIO)
 newtype Baralho = Baralho [Carta] deriving (Show, Eq)
 
 gerarCartasElemento :: Elemento -> [Carta]
-gerarCartasElemento elemento =
-    [Carta elemento valor poder | (valor, poder) <- zip [1..12] poderes]
-    where
-        poderes = replicate 12 Null
+gerarCartasElemento elemento = [Carta elemento valor Null | valor <- [1..12]]
 
 criarBaralho :: Baralho
-criarBaralho = Baralho (gerarCartasElemento Fogo ++ gerarCartasElemento Agua ++ gerarCartasElemento Neve)
+criarBaralho = Baralho (concatMap gerarCartasElemento [Fogo, Agua, Neve])
 
 pegarCarta :: Baralho -> (Maybe Carta, Baralho)
 pegarCarta (Baralho []) = (Nothing, Baralho [])
@@ -27,14 +24,13 @@ pegarCarta (Baralho (carta:resto)) = (Just carta, Baralho resto)
 
 extrairCartas :: Int -> Baralho -> ([Carta], Baralho)
 extrairCartas 0 baralho = ([], baralho)
-extrairCartas n (Baralho []) = ([], Baralho [])
+extrairCartas _ (Baralho []) = ([], Baralho [])
 extrairCartas n baralho =
-    let (carta, criarBaralho) = pegarCarta baralho
+    let (carta, baralhoRestante) = pegarCarta baralho
     in case carta of
-        Nothing -> ([], criarBaralho)
-        Just c  -> let (restoCartas, baralhoFinal) = extrairCartas (n - 1) criarBaralho
+        Nothing -> ([], baralhoRestante)
+        Just c  -> let (restoCartas, baralhoFinal) = extrairCartas (n - 1) baralhoRestante
                    in (c : restoCartas, baralhoFinal)
-
 
 embaralhar :: Baralho -> IO Baralho
 embaralhar (Baralho []) = return (Baralho [])

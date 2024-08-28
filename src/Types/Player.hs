@@ -1,5 +1,6 @@
 module Types.Player (
     Player (..),
+    Faixa (..),
     getNome,
     getFaixa,
     upFaixa,
@@ -8,7 +9,6 @@ module Types.Player (
     getProgresso
 ) where
 import Types.Carta
-import Types.Faixa
 
 -- Data do jogador
 -- String: Nome
@@ -17,7 +17,7 @@ import Types.Faixa
 -- Int: Partidas jogadas
 -- Int: Progresso inicial
 data Player = Player String [Carta] Faixa Int Int deriving (Show, Read)
-
+data Faixa = Branca | Azul | Roxa | Marrom | Preta deriving (Eq, Show, Enum, Read)
 
 -- pegar o nome do jogador
 getNome:: Player -> String
@@ -34,7 +34,7 @@ getProgresso (Player _ _ _ _ progresso) = progresso
 upFaixa:: Player -> Player 
 upFaixa (Player nomePlayer cartas faixaPlayer partidas progresso) = Player nomePlayer cartas (succ faixaPlayer) partidas progresso
 
-upPartidasJogadas :: Player -> Player
+upPartidasJogadas :: Player -> IO Player
 upPartidasJogadas (Player nomePlayer cartas faixaPlayer partidas progresso) = Player nomePlayer cartas faixaPlayer (succ partidas) progresso
 
 newPlayer :: String -> Player

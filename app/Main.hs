@@ -30,5 +30,5 @@ menu = do
         "1" -> novoJogo
         "2" -> carregarJogo
         "3" -> verificarFaixa
-    --   "4" -> readFile "./src/Repositories/instrucoes.txt"
+        "4" -> lerInstrucoes
         _ -> putStrLn "Opção inválida, escolha novamente!" >> pressionarTecla >> menu

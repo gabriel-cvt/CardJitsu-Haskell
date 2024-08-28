@@ -1,16 +1,16 @@
 module Controllers.ControleFases (
-    passarFaseJogador,
     carregarFaseJogador,
-    carregarFase
+    carregarFase,
+    faseInicial,
+    faseAzul,
+    faseRoxa,
+    faseMarrom,
+    faseFinal
 ) where
 
 import Util.Lib
 import System.Console.ANSI
-import Types.Faixa
-import Services.Salvamentos
 import Types.Player
-import Controllers.Fases
-import System.Exit (exitSuccess)
 
 -- Função que leva para o carregamento da fase na função mais específica carregarFaseJogador
 carregarFase :: IO()
@@ -33,16 +33,19 @@ carregarFaseJogador = do
         Marrom -> faseMarrom
         Preta -> faseFinal
 
--- Leva o jogador para a próxima fase ou ir para o dojo, como eu ainda não resolvi o problema
--- de importação cíclica, botei pra sair do jogo, mas ainda vou tentar mudar
-passarFaseJogador :: IO ()
-passarFaseJogador = do
+faseInicial :: IO()
+faseInicial = do
     clearScreen
-    putStrLn "Deseja avançar para o próximo desafio ou sair do jogo?"
-    putStrLn "1 - Próxima fase"
-    putStrLn "2 - Ir para o menu principal"
-    input <- getLine
-    case input of
-        "1" -> carregarFaseJogador
-        "2" -> exitSuccess
-        _ -> putStrLn "Opção inválida, escolha novamente!" >> pressionarTecla >> passarFaseJogador
+    putStrLn "someFunc"
+
+faseAzul :: IO()
+faseAzul = putStrLn "someFunc"
+
+faseRoxa :: IO()
+faseRoxa = putStrLn "someFunc"
+
+faseMarrom :: IO()
+faseMarrom = putStrLn "someFunc"
+
+faseFinal :: IO()
+faseFinal = putStrLn "someFunc"
