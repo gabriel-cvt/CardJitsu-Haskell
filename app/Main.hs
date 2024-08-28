@@ -2,7 +2,7 @@ module Main (main) where
 
 import Util.Lib
 import System.Console.ANSI
-import Controllers.ControleSalvamentos
+import Controllers.ControleJogo (novoJogo, carregarJogo)
 
 main :: IO ()
 main = start
@@ -29,6 +29,6 @@ menu = do
     case input of
         "1" -> novoJogo
         "2" -> carregarJogo
-        "3" -> verificarFaixa
-        "4" -> lerInstrucoes
+        "3" -> verificarFaixa >> pressionarTecla >> menu
+        "4" -> lerInstrucoes >> pressionarTecla >> menu
         _ -> putStrLn "Opção inválida, escolha novamente!" >> pressionarTecla >> menu

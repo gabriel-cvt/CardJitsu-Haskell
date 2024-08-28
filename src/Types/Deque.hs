@@ -1,6 +1,6 @@
 module Types.Deque (
-    Deque,
-    criarDeque,
+    Deque(..),
+    novoDeque,
     completarDeque,
     jogarCarta
 ) where
@@ -10,8 +10,8 @@ import Types.Baralho
 
 newtype Deque = Deque [Carta] deriving (Eq)
 
-criarDeque :: Baralho -> (Deque, Baralho)
-criarDeque baralhoInicial = 
+novoDeque :: Baralho -> (Deque, Baralho)
+novoDeque baralhoInicial = 
     let (cartasIniciais, novoBaralho) = extrairCartas 5 baralhoInicial
     in (Deque cartasIniciais, novoBaralho)
 

@@ -35,7 +35,7 @@ carregaJogador = do
 -- Retorna true para não existir progresso do jogador (progresso == 0)
 -- Falso para caso exista um progresso
 existeProgresso :: Player -> Bool
-existeProgresso (Player _ _ _ _ progresso) = progresso /= 0
+existeProgresso (Player _ _ _  progresso) = progresso /= 0
 
 -- Caminho onde vai salvar o jogador
 pathPlayer :: String

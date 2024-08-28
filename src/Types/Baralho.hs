@@ -1,6 +1,7 @@
 module Types.Baralho (
     Baralho,
-    criarBaralho,
+    gerarCartasElemento,
+    novoBaralho,
     pegarCarta,
     extrairCartas,
     embaralhar
@@ -13,10 +14,13 @@ import System.Random (randomRIO)
 newtype Baralho = Baralho [Carta] deriving (Show, Eq)
 
 gerarCartasElemento :: Elemento -> [Carta]
-gerarCartasElemento elemento = [Carta elemento valor Null | valor <- [1..12]]
+gerarCartasElemento elemento = 
+    [ Carta elemento valor poder | (valor, poder) <- zip [1..12] poderes ]
+  where
+    poderes = replicate 8 Null ++ [MaisDois, MenosDois, Bloquear elemento, Inverte]
 
-criarBaralho :: Baralho
-criarBaralho = Baralho (concatMap gerarCartasElemento [Fogo, Agua, Neve])
+novoBaralho :: Baralho
+novoBaralho = Baralho (concatMap gerarCartasElemento [Fogo, Agua, Neve])
 
 pegarCarta :: Baralho -> (Maybe Carta, Baralho)
 pegarCarta (Baralho []) = (Nothing, Baralho [])

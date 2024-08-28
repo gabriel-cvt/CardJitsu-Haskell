@@ -1,1 +1,1 @@
-Player "ninja mascarado ggwp" [] Branca 0 1
+Player "peixonauta" [] Azul 1

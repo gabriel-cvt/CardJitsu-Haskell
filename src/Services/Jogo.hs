@@ -6,91 +6,111 @@ import Types.Baralho
 import Types.Deque
 import Types.Carta
 import Services.Batalha
+import Types.Elemento (Elemento (..))
 
--- Tipo para representar o estado do jogo
 data EstadoJogo = EstadoJogo {
-    baralho :: Baralho,
+    baralhoPlayer :: Baralho,
+    elementosPlayer :: ([Elemento], [Elemento], [Elemento]),
+    baralhoInimigo :: Baralho,
+    elementosInimigo :: ([Elemento], [Elemento], [Elemento]),
     dequePlayer :: Deque,
-    dequeBot :: Deque,
-    historico :: [Carta]
+    dequeInimigo :: Deque,
+    pilhaPoder :: [Poder]
 } deriving (Show)
 
--- Função para iniciar o jogo
-iniciarJogo :: IO ()
+iniciarJogo :: IO Bool
 iniciarJogo = do
     -- Passo 1: Gerar Baralho
-    let baralhoInicialJogador = criarBaralho
-    
-    -- Passo 2: Embaralhar
-    baralhoEmbaralhado <- embaralhar baralhoInicialJogador
-    
-    -- Passo 3: Dar 5 cartas ao Player e Bot
-    let (dequePlayer, baralhoRestante1) = criarDeque baralhoEmbaralhado
-    let (dequeBot, baralhoRestante2) = criarDeque baralhoRestante1
-    
+    let baralho = novoBaralho
+
+    -- Passo 2: Embaralhar Baralhos Separadamente
+    baralhoJogador <- embaralhar baralho
+    baralhoInimigo <- embaralhar baralho
+
+    -- Passo 3: Dar 5 cartas ao Jogador
+    let (dequeJogador, baralhoRestanteJogador) = novoDeque baralhoJogador
+
+    -- Passo 4: Dar 5 cartas ao Inimigo
+    let (dequeInimigo, baralhoRestanteInimigo) = novoDeque baralhoInimigo
+
     -- Inicializar estado do jogo
-    let estadoInicial = EstadoJogo baralhoRestante2 dequePlayer dequeBot []
-    
-    -- Iniciar loop do jogo
+    let estadoInicial = EstadoJogo baralhoRestanteJogador ([], [], []) baralhoRestanteInimigo ([], [], []) dequeJogador dequeInimigo []
+
+    -- Iniciar loop do jogo e retornar o resultado
     loopJogo estadoInicial
 
--- Função principal de loop do jogo
-loopJogo :: EstadoJogo -> IO ()
-loopJogo estado@(EstadoJogo baralho dequePlayer dequeBot historico) = do
-    -- Passo 1: Verificar e aplicar poderes no topo do histórico
-    let poderesTop = verificarPoderesTop historico
-    aplicarPoderes poderesTop
-    
-    -- Passo 2: Player joga uma carta
-    putStrLn "Escolha uma carta para jogar:"
-    print dequePlayer
+
+loopJogo :: EstadoJogo -> IO Bool
+loopJogo estado = do
+    -- Passo 1: Jogador joga uma carta
+    putStrLn "Escolha uma carta para jogar (índice):"
+    print (dequePlayer estado)
     escolha <- read <$> getLine
-    let (cartaJogadaPlayer, novoDequePlayer) = jogarCarta escolha dequePlayer
+    let (cartaJogadaPlayer, novoDequePlayer) = jogarCarta escolha (dequePlayer estado)
     
     case cartaJogadaPlayer of
         Nothing -> do
             putStrLn "Escolha inválida. Tente novamente."
             loopJogo estado
-        Just carta -> do
-            -- Passo 3: Atualiza deque do player
-            let novoHistorico = carta : historico
+        Just cartaPlayer -> do
+            -- Passo 2: Atualiza pilha de Poder
+            let novaPilha = atualizarPilhaPoder cartaPlayer (pilhaPoder estado)
             
-            -- Passo 4: Player ganha uma carta do baralho
-            let (novoDequePlayer2, baralhoRestante3) = completarDeque novoDequePlayer baralho
+            -- Passo 3: Player ganha uma carta do baralho
+            let (novoDequePlayer2, baralhoPlayerRestante) = completarDeque novoDequePlayer (baralhoPlayer estado)
             
-            -- Passo 5: Bot joga uma carta (implementado com lógica básica)
-            cartaBot <- escolherCartaBot dequeBot
+            -- Passo 4: Inimigo joga uma carta
+            let (cartaJogadaInimigo, baralhoInimigoRestante) = pegarCarta (baralhoInimigo estado)
+            let (novoDequeInimigo, baralhoInimigoRestanteFinal) = completarDeque (dequeInimigo estado) baralhoInimigoRestante
             
-            -- Passo 6: Atualiza deque do Bot
-            let (novoDequeBot, baralhoRestante4) = completarDeque dequeBot baralhoRestante3
-            
-            -- Passo 7: Combate das duas cartas
-            let vencedor = combate carta cartaBot
-            
-            -- Atualizar estado do jogo e continuar o loop
-            let novoEstado = EstadoJogo baralhoRestante4 novoDequePlayer2 novoDequeBot (cartaBot : novoHistorico)
-            putStrLn $ "Player jogou: " ++ show carta
-            putStrLn $ "Bot jogou: " ++ show cartaBot
-            putStrLn $ "Vencedor: " ++ show vencedor
-            
-            loopJogo novoEstado
+            case cartaJogadaInimigo of
+                Nothing -> do
+                    putStrLn "O inimigo não tem cartas para jogar. O jogo acabou!"
+                    return True
+                Just cartaBot -> do
+                    -- Passo 5: Combate das duas cartas
+                    let vencedor = combate cartaPlayer cartaBot
+                    
+                    -- Atualiza elementos
+                    let novoElementosPlayer = atualizarElementos vencedor (elementosPlayer estado) cartaPlayer
+                    let novoElementosInimigo = atualizarElementos (oponente vencedor) (elementosInimigo estado) cartaBot
+                    
+                    -- Verificar se há um vencedor
+                    if verificaVencedor novoElementosPlayer
+                    then do
+                        putStrLn "Você venceu o jogo!"
+                        return True
+                    else if verificaVencedor novoElementosInimigo
+                        then do
+                            putStrLn "O inimigo venceu o jogo!"
+                            return False
+                        else do
+                            -- Atualiza estado do jogo e continua o loop
+                            let novoEstado = EstadoJogo baralhoPlayerRestante novoElementosPlayer baralhoInimigoRestanteFinal novoElementosInimigo novoDequePlayer2 novoDequeInimigo novaPilha
+                            loopJogo novoEstado
 
-verificarPoderesTop :: [Carta] -> [Poder]
-verificarPoderesTop [] = []
-verificarPoderesTop (carta:resto)
-    | podeAplicarPoder carta = [poder carta]
-    | otherwise = verificarPoderesTop resto
+atualizarElementos :: VencedorRodada -> ([Elemento], [Elemento], [Elemento]) -> Carta -> ([Elemento], [Elemento], [Elemento])
+atualizarElementos vencedor (fogo, agua, neve) (Carta elemento _ _) =
+    case vencedor of
+        JOGADOR -> adicionarElemento elemento (fogo, agua, neve)
+        ADVERSARIO -> adicionarElemento elemento (fogo, agua, neve)
+        NENHUM -> (fogo, agua, neve)
 
-aplicarPoderes :: [Poder] -> IO ()
-aplicarPoderes poderes = do
-    let aplicadosPlayer = map aplicarPoderNoDeque poderes dequePlayer
-    let aplicadosBot = map aplicarPoderNoDeque poderes dequeBot
-    return ()
+adicionarElemento :: Elemento -> ([Elemento], [Elemento], [Elemento]) -> ([Elemento], [Elemento], [Elemento])
+adicionarElemento Fogo (fogo, agua, neve) = (Fogo : fogo, agua, neve)
+adicionarElemento Agua (fogo, agua, neve) = (fogo, Agua : agua, neve)
+adicionarElemento Neve (fogo, agua, neve) = (fogo, agua, Neve : neve)
 
-aplicarPoderNoDeque :: Poder -> Deque -> Deque
-aplicarPoderNoDeque poder (Deque cartas) = Deque (map (aplicarPoder poder) cartas)
+oponente :: VencedorRodada -> VencedorRodada
+oponente JOGADOR = ADVERSARIO
+oponente ADVERSARIO = JOGADOR
+oponente NENHUM = NENHUM
 
-escolherCartaBot :: Deque -> IO Carta
-escolherCartaBot (Deque cartas) = do
-    let indice = length cartas `div` 2
-    return $ cartas !! indice
+verificaVencedor :: ([Elemento], [Elemento], [Elemento]) -> Bool
+verificaVencedor (fogo, agua, neve) =
+    let counts = map length [fogo, agua, neve]
+    in any (>= 3) counts || all (> 0) counts
+
+atualizarPilhaPoder :: Carta -> [Poder] -> [Poder]
+atualizarPilhaPoder (Carta  _ _ Null) pilha = pilha
+atualizarPilhaPoder (Carta  _ _ poder) pilha = poder : pilha
