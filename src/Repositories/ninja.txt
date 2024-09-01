@@ -1,1 +1,1 @@
-Player "peixonauta" [] Azul 1
+Player "" [] Branca 0

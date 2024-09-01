@@ -31,7 +31,7 @@ jogarCarta escolha (Deque cartas)
 
 instance Show Deque where
     show (Deque cartas) = 
-        "DEQUE :\n" ++ unlines (zipWith formatCard [1..] cartas)
+        unlines (zipWith formatCard [1..] cartas)
       where
         formatCard :: Int -> Carta -> String
         formatCard i carta = "[" ++ show i ++ "] - " ++ show carta

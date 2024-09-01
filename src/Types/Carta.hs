@@ -8,7 +8,15 @@ module Types.Carta (
 import Types.Elemento
 
 data Carta = Carta Elemento Int Poder deriving (Eq, Read)
-data Poder = Bloquear Elemento | MaisDois | MenosDois | Inverte | Null deriving (Eq, Read, Show)
+data Poder = Bloquear Elemento | MaisDois | MenosDois | Inverte | Null deriving (Eq, Read)
+
+instance Show Poder where
+    show (Bloquear elemento) = "Bloquear " ++ show elemento
+    show MaisDois = "Mais Dois"
+    show MenosDois = "Menos Dois"
+    show Inverte = "Inverte"
+    show Null = "Nenhum"
+
 
 instance Show Carta where
     show (Carta elemento valor poder) =
