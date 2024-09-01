@@ -58,10 +58,10 @@ loopJogo estado = do
     putStrLn ""
 
     -- Determinar elemento proibido baseado no poder ativo do jogador e do inimigo
-    let elementoProibidoPlayer = case pilhaPoderPlayer estado of
+    let elementoProibidoPlayer = case pilhaPoderInimigo estado of
             (Bloquear elem : _) -> Just elem
             _ -> Nothing
-        elementoProibidoInimigo = case pilhaPoderInimigo estado of
+        elementoProibidoInimigo = case pilhaPoderPlayer estado of
             (Bloquear elem : _) -> Just elem
             _ -> Nothing
 
@@ -104,13 +104,32 @@ loopJogo estado = do
                             putStrLn "O inimigo jogou:"
                             print cartaBot
                             pauseScreen
+			    
+			    -- Resolver combate e atualizar estado do jogo
+			
+                            let poderPlayer = case pilhaPoderPlayer estado of
+                                    (MenosDois : _) -> 3
+                                    (MaisDois : _)  -> 2
+                                    (Inverte : _)   -> 1
+                                    _               -> 0
 
-                            -- Resolver combate e atualizar estado do jogo
-                            let vencedor = combate cartaPlayer cartaBot
-                                novoElementosPlayer = if vencedor == JOGADOR then atualizarElementos (elementosPlayer estado) cartaPlayer else elementosPlayer estado
+                                poderInimigo = case pilhaPoderInimigo estado of
+                                    (MenosDois : _) -> 3
+                                    (MaisDois : _)  -> 2
+                                    (Inverte : _)   -> 1
+                                    _               -> 0
+
+                            let vencedor = if poderPlayer == 0 && poderInimigo == 0
+                                            then combate cartaPlayer cartaBot
+                                            else if poderPlayer == 1 || poderInimigo == 1
+                                                then combateInvertido cartaPlayer cartaBot
+                                                else combateComPoder cartaPlayer cartaBot poderPlayer poderInimigo 
+
+                            let novoElementosPlayer = if vencedor == JOGADOR then atualizarElementos (elementosPlayer estado) cartaPlayer else elementosPlayer estado
                                 novoElementosInimigo = if vencedor == ADVERSARIO then atualizarElementos (elementosInimigo estado) cartaBot else elementosInimigo estado
                                 novaPilhaPlayer = atualizarPilhaPoder cartaPlayer (pilhaPoderPlayer estado)
                                 novaPilhaInimigo = atualizarPilhaPoder cartaBot (pilhaPoderInimigo estado)
+
                             
                             -- Verificar se há um vencedor
                             if verificaVencedor novoElementosPlayer
