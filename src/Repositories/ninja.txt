@@ -1,1 +1,1 @@
-Player "" [] Branca 0
+Player "1" [] Azul 1

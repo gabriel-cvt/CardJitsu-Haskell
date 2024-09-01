@@ -8,6 +8,8 @@ import Types.Carta
 import Services.Batalha
 import Types.Elemento (Elemento (..))
 import System.Console.ANSI (clearScreen)
+import Types.Player (getNome, Player, Faixa (..), getFaixa)
+import Util.Lib (carregaJogador, pressionarTecla, pausarJogo)
 
 data EstadoJogo = EstadoJogo {
     baralhoPlayer :: Baralho,
@@ -52,76 +54,87 @@ loopJogo estado = do
     putStrLn ""
 
     -- Jogador faz sua jogada
-    putStrLn "Escolha uma carta para jogar [1-5]:\n"
+    putStrLn "Escolha uma carta para jogar [1-5]:"
+    putStrLn "Caso queira pausar o jogo, aperte 6\n"
     print (dequePlayer estado)
+    putStrLn "[6] - Pausar Jogo"
     escolha <- read <$> getLine
 
     -- Ajustar o índice para a base 0
     let escolhaAjustada = escolha - 1
-    let (cartaJogadaPlayer, novoDequePlayer) = jogarCarta escolhaAjustada (dequePlayer estado)
-    
-    case cartaJogadaPlayer of
-        Nothing -> do
-            putStrLn "Escolha inválida. Tente novamente."
-            pauseScreen
-            loopJogo estado
-        Just cartaPlayer -> do
-            -- Atualizar estado do jogo após a jogada do jogador
-            let novaPilha = atualizarPilhaPoder cartaPlayer (pilhaPoder estado)
-                (novoDequePlayer2, baralhoPlayerRestante) = completarDeque novoDequePlayer (baralhoPlayer estado)
+    if escolhaAjustada == 5 then do
+        clearScreen >> pausarJogo >> loopJogo estado
+    else do
+        let (cartaJogadaPlayer, novoDequePlayer) = jogarCarta escolhaAjustada (dequePlayer estado)
+        
+        case cartaJogadaPlayer of
+            Nothing -> do
+                putStrLn "Escolha inválida. Tente novamente."
+                pressionarTecla
+                loopJogo estado
+            Just cartaPlayer -> do
+                -- Atualizar estado do jogo após a jogada do jogador
+                let novaPilha = atualizarPilhaPoder cartaPlayer (pilhaPoder estado)
+                    (novoDequePlayer2, baralhoPlayerRestante) = completarDeque novoDequePlayer (baralhoPlayer estado)
 
-            -- Inimigo faz sua jogada
-            let (cartaJogadaInimigo, baralhoInimigoRestante) = pegarCarta (baralhoInimigo estado)
-                (novoDequeInimigo, baralhoInimigoRestanteFinal) = completarDeque (dequeInimigo estado) baralhoInimigoRestante
+                -- Inimigo faz sua jogada
+                let (cartaJogadaInimigo, baralhoInimigoRestante) = pegarCarta (baralhoInimigo estado)
+                    (novoDequeInimigo, baralhoInimigoRestanteFinal) = completarDeque (dequeInimigo estado) baralhoInimigoRestante
 
-            case cartaJogadaInimigo of
-                Nothing -> do
-                    putStrLn "O inimigo não tem cartas para jogar. O jogo acabou!"
-                    pauseScreen
-                    return True
-                Just cartaBot -> do
-                    -- Mostrar carta jogada pelo inimigo
-                    putStrLn "O inimigo jogou:"
-                    print cartaBot
-                    pauseScreen
-
-                    -- Resolver combate e atualizar estado do jogo
-                    let vencedor = combate cartaPlayer cartaBot
-                        novoElementosPlayer = if vencedor == JOGADOR then atualizarElementos (elementosPlayer estado) cartaPlayer else elementosPlayer estado
-                        novoElementosInimigo = if vencedor == ADVERSARIO then atualizarElementos (elementosInimigo estado) cartaBot else elementosInimigo estado
-                    
-                    -- Verificar se há um vencedor
-                    if verificaVencedor novoElementosPlayer
-                    then do
-                        putStrLn "Você venceu o jogo!"
-                        pauseScreen
+                case cartaJogadaInimigo of
+                    Nothing -> do
+                        putStrLn "O inimigo não tem cartas para jogar. O jogo acabou!"
+                        pressionarTecla
                         return True
-                    else if verificaVencedor novoElementosInimigo
+                    Just cartaBot -> do
+                        -- Mostrar carta jogada pelo inimigo
+                        putStrLn "O inimigo jogou:"
+                        print cartaBot
+                        pressionarTecla
+
+                        -- Resolver combate e atualizar estado do jogo
+                        let vencedor = combate cartaPlayer cartaBot
+                            novoElementosPlayer = if vencedor == JOGADOR then atualizarElementos (elementosPlayer estado) cartaPlayer else elementosPlayer estado
+                            novoElementosInimigo = if vencedor == ADVERSARIO then atualizarElementos (elementosInimigo estado) cartaBot else elementosInimigo estado
+                        
+                        -- Verificar se há um vencedor
+                        if verificaVencedor novoElementosPlayer
                         then do
-                            putStrLn "O inimigo venceu o jogo!"
-                            pauseScreen
-                            return False
-                        else do
-                            -- Continuar o loop com o estado atualizado
-                            let novoEstado = EstadoJogo baralhoPlayerRestante novoElementosPlayer baralhoInimigoRestanteFinal novoElementosInimigo novoDequePlayer2 novoDequeInimigo novaPilha
-                            loopJogo novoEstado
+                            clearScreen
+                            putStrLn "Você venceu o jogo!"
+                            pressionarTecla
+                            return True
+                        else if verificaVencedor novoElementosInimigo
+                            then do
+                                putStrLn "O inimigo venceu o jogo!"
+                                pressionarTecla
+                                return False
+                            else do
+                                -- Continuar o loop com o estado atualizado
+                                let novoEstado = EstadoJogo baralhoPlayerRestante novoElementosPlayer baralhoInimigoRestanteFinal novoElementosInimigo novoDequePlayer2 novoDequeInimigo novaPilha
+                                loopJogo novoEstado
 
 
 -- Função para imprimir os poderes ativos
 printPoderesAtivos :: [Poder] -> IO ()
 printPoderesAtivos poderes = do
+    player <- carregaJogador
     let poderPlayer = if null poderes then "Nenhum" else show (head poderes)
     let poderInimigo = if length poderes < 2 then "Nenhum" else show (poderes !! 1)
-    putStrLn $ "| Player : " ++ poderPlayer
-    putStrLn $ "| Inimigo: " ++ poderInimigo
+    putStrLn $ "| " ++ getNome player ++ ": " ++ poderPlayer
+    putStrLn $ "| " ++ printNomeInimigo player ++ ": " ++ poderInimigo
 
--- Função auxiliar para pausar e esperar input do usuário
-pauseScreen :: IO ()
-pauseScreen = do
-    putStrLn "Pressione Enter para continuar..."
-    _ <- getLine
-    return ()
-
+-- Função auxiliar de bônus pra printar nome do inimigo :)
+printNomeInimigo :: Player -> String
+printNomeInimigo jogador = do
+    case getFaixa jogador of
+        Branca -> "O Ruivo"
+        Azul -> "Bruxa da Neve"
+        Roxa -> "Cavaleiro do Mar"
+        Marrom -> "Punhos de Fogo"
+        Preta -> "Olhos de falcão"
+        _ -> "Inimigo"
+        
 -- Atualiza os elementos de acordo com o vencedor da rodada
 atualizarElementos :: ([Elemento], [Elemento], [Elemento]) -> Carta -> ([Elemento], [Elemento], [Elemento])
 atualizarElementos (fogo, agua, neve) (Carta elemento _ _) =
@@ -142,8 +155,3 @@ verificaVencedor :: ([Elemento], [Elemento], [Elemento]) -> Bool
 verificaVencedor (fogo, agua, neve) =
     let counts = map length [fogo, agua, neve]
     in any (>= 3) counts || all (> 0) counts
-
--- Atualiza a pilha de poderes
-atualizarPilhaPoder :: Carta -> [Poder] -> [Poder]
-atualizarPilhaPoder (Carta _ _ Null) pilha = pilha
-atualizarPilhaPoder (Carta _ _ poder) pilha = poder : pilha

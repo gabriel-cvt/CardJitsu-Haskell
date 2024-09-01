@@ -2,7 +2,8 @@ module Types.Carta (
     Carta(..),
     Poder(..),
     aplicarPoder,
-    limitarValor
+    limitarValor,
+    atualizarPilhaPoder
 ) where
 
 import Types.Elemento
@@ -30,6 +31,9 @@ aplicarPoder MaisDois (Carta elemento valor poder) = Carta elemento (limitarValo
 aplicarPoder MenosDois (Carta elemento valor poder) = Carta elemento (limitarValor (valor - 2)) poder
 aplicarPoder Inverte (Carta elemento valor poder) = Carta elemento (valor * (-1)) poder
 aplicarPoder (Bloquear _) carta = carta
+
+atualizarPilhaPoder :: Carta -> [Poder] -> [Poder]
+atualizarPilhaPoder (Carta _ _ poder) pilha = poder : pilha
 
 limitarValor :: Int -> Int
 limitarValor valor

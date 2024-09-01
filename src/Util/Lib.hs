@@ -5,17 +5,28 @@ module Util.Lib (
     salvarJogador,
     carregaJogador,
     existeProgresso,
-    verificarFaixa
+    verificarFaixa,
+    pausarJogo,
+    loadingBar
 ) where
 
 import GHC.IO.Handle
 import System.IO
 import Types.Player (getFaixa, Player (..), Faixa (..))
+import System.Console.ANSI (clearScreen)
 
 -- Teste inatividade
 pressionarTecla :: IO()
 pressionarTecla = do
     putStr "Pressione a tecla ENTER para continuar... \n"
+    hFlush stdout
+    _ <- getChar
+    return()
+
+pausarJogo :: IO()
+pausarJogo = do
+    putStrLn "JOGO PAUSADO!"
+    putStrLn "Para despausar, aperte a tecla ENTER"
     hFlush stdout
     _ <- getChar
     return()
@@ -41,6 +52,19 @@ existeProgresso (Player _ _ _  progresso) = progresso /= 0
 pathPlayer :: String
 pathPlayer = "./src/Repositories/ninja.txt"
 
+loadingBar :: Int -> IO ()
+loadingBar pct = do
+    let width = 40  -- Largura total da barra de progresso
+    let filled = (pct * (width - 7)) `div` 100  -- Calcula quantos caracteres devem ser preenchidos (reservando espaço para a porcentagem)
+    let empty = (width - 7) - filled  -- Calcula o espaço vazio
+    
+    let bar = replicate filled '#' ++ replicate empty '-'
+    let progress = show pct ++ "%"  -- Porcentagem como string
+
+    -- Atualiza a barra de progresso na mesma linha
+    putStr $ "\r[" ++ bar ++ "] " ++ progress
+    -- Flush the output buffer
+    hFlush stdout
 
 -- Lê as instruções do jogo
 lerInstrucoes :: IO()
@@ -53,7 +77,7 @@ verificarFaixa :: IO()
 verificarFaixa = do
     jogador <- carregaJogador
     let faixaAtual = getFaixa jogador
-    let faixasAnteriores = enumFromTo Branca faixaAtual 
+    let faixasAnteriores = enumFromTo Branca faixaAtual
     let faixasRestantes = enumFrom (succ faixaAtual)
 
     case faixaAtual of
@@ -68,9 +92,14 @@ verificarFaixa = do
                 putStrLn "Parabéns! Você conquistou a faixa preta!"
                 putStrLn "Faixas anteriores:"
                 mapM_ (putStrLn . (" ➤ " ++) . show) faixasAnteriores
-                putStrLn "Faixas restantes:"
-                putStrLn " ➤ Nenhuma"
+                putStrLn "Objetivo restante:"
+                putStrLn " ➤ Desafiar o sensei e virar um Mestre ninja"
 
+            Mestre -> do
+                putStrLn "Parabéns! Você é um grande mestre Ninja"
+                putStrLn "Faixas anteriores:"
+                mapM_ (putStrLn . (" ➤ " ++) . show) faixasAnteriores
+                
             _ -> do
                 putStrLn $ "Você está na faixa: " ++ show faixaAtual
             
