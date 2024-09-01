@@ -3,6 +3,7 @@ module Types.Baralho (
     gerarCartasElemento,
     novoBaralho,
     pegarCarta,
+    inimigoPegarCarta,
     extrairCartas,
     embaralhar
 ) where
@@ -25,6 +26,15 @@ novoBaralho = Baralho (concatMap gerarCartasElemento [Fogo, Agua, Neve])
 pegarCarta :: Baralho -> (Maybe Carta, Baralho)
 pegarCarta (Baralho []) = (Nothing, Baralho [])
 pegarCarta (Baralho (carta:resto)) = (Just carta, Baralho resto)
+
+inimigoPegarCarta :: Baralho -> Maybe Elemento -> IO (Maybe Carta, Baralho)
+inimigoPegarCarta (Baralho []) _ = do
+    novoBaralho <- embaralhar novoBaralho
+    inimigoPegarCarta novoBaralho Nothing  -- depois de embaralhar, o elemento proibido é ignorado
+inimigoPegarCarta baralho@(Baralho (carta@(Carta elemento _ _):resto)) (Just elementoProibido)
+    | elemento == elementoProibido = inimigoPegarCarta (Baralho resto) (Just elementoProibido)
+    | otherwise = return (Just carta, Baralho resto)
+inimigoPegarCarta (Baralho (carta:resto)) Nothing = return (Just carta, Baralho resto)
 
 extrairCartas :: Int -> Baralho -> ([Carta], Baralho)
 extrairCartas 0 baralho = ([], baralho)
