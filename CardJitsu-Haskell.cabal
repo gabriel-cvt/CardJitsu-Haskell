@@ -36,6 +36,7 @@ library
       Types.Elemento
       Types.Player
       Util.Lib
+      Util.Textos
   other-modules:
       Paths_CardJitsu_Haskell
   autogen-modules:

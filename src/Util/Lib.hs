@@ -7,13 +7,12 @@ module Util.Lib (
     existeProgresso,
     verificarFaixa,
     pausarJogo,
-    loadingBar
+    loadingBar,
 ) where
 
 import GHC.IO.Handle
 import System.IO
 import Types.Player (getFaixa, Player (..), Faixa (..))
-import System.Console.ANSI (clearScreen)
 
 -- Teste inatividade
 pressionarTecla :: IO()

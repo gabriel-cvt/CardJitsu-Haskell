@@ -15,6 +15,7 @@ import Util.Lib (pressionarTecla, salvarJogador, carregaJogador, existeProgresso
 import Types.Player (upPartidasJogadas, Player, getFaixa, getNome, upFaixa, Faixa (..), newPlayer)
 import Services.Jogo (iniciarJogo)
 import Control.Concurrent (threadDelay)
+import Util.Textos (textoFaseInicial, textoFaseAzul, textoFaseRoxa, textoFaseMarrom, textoFaseFinal, textoZerou)
 
 
 
@@ -22,11 +23,12 @@ menu :: IO()
 menu = do
     clearScreen
     putStrLn "======= Bem vindo ao Dojo! ======="
-    putStrLn "Deseja carregar um jogo ou começar um novo?"
+    putStrLn "Qual vai ser a sua escolha para hoje?"
     putStrLn "1 - Começar novo jogo"
     putStrLn "2 - Carregar jogo"
     putStrLn "3 - Checar faixas"
     putStrLn "4 - Instruções"
+    putStrLn "5 - Sair do jogo"
 
     
     input <- getLine
@@ -36,26 +38,41 @@ menu = do
         "2" -> carregarJogo
         "3" -> verificarFaixa >> pressionarTecla >> menu
         "4" -> lerInstrucoes >> pressionarTecla >> menu
+        "5" -> putStrLn "Até a próxima, jovem ninja" >> exitSuccess
         _ -> putStrLn "Opção inválida, escolha novamente!" >> pressionarTecla >> menu
 
 -- Controller geral do jogo, que leva para a função do jogo, como é uma MD3
 -- Obrigatoriamente existirá duas partidas, cada partida retornará o vencedor (PLAYER/BOT)
 -- Se for o mesmo vencedor, então ele já ganha e verifica quem venceu, se não vai pra última
-controllerJogo :: Player -> String -> IO()
+controllerJogo :: Player -> String -> IO ()
 controllerJogo jogador nomeBot = do
     let jogadorPartida = upPartidasJogadas jogador
 
-    primeiraRodada <-  iniciarJogo
-
-    segundaRodada <- iniciarJogo
-
-    if primeiraRodada == segundaRodada
-    then verificaVencedor primeiraRodada jogadorPartida nomeBot
-
+    primeiraRodada <- iniciarJogo (0, 0)
+    if primeiraRodada then do
+            clearScreen
+            putStrLn $ nomeBot ++ ": Você ganhou a primeira, mas a próxima irei te destruir"
+            mapM_ (\pct -> loadingBar pct >> threadDelay 250000) [0, 10 .. 100] >> putStrLn "\n"
+            segundaRodada <- iniciarJogo (1, 0)
+            if primeiraRodada == segundaRodada then verificaVencedor primeiraRodada jogadorPartida nomeBot
+            else do
+                clearScreen
+                putStrLn $ "Pelo visto a batalha está difícil com " ++ nomeBot ++ ", será necessário um desempate!"
+                mapM_ (\pct -> loadingBar pct >> threadDelay 250000) [0, 10 .. 100] >> putStrLn "\n"
+                ultimaRodada <- iniciarJogo (1, 1)
+                verificaVencedor ultimaRodada jogadorPartida nomeBot
     else do
-        putStrLn $ "Pelo visto a batalha está dificíl com " ++ nomeBot ++ ", será necessário um desempate!"
-        ultimaRodada <- iniciarJogo
-        verificaVencedor ultimaRodada jogadorPartida nomeBot
+        clearScreen
+        putStrLn (nomeBot ++ ": Você está levando isso a sério? Dessa forma nunca conseguirá ser um Mestre Ninja")
+        mapM_ (\pct -> loadingBar pct >> threadDelay 250000) [0, 10 .. 100] >> putStrLn "\n"
+        segundaRodada <- iniciarJogo (0, 1)
+        if primeiraRodada == segundaRodada then verificaVencedor primeiraRodada jogadorPartida nomeBot
+        else do
+            clearScreen
+            putStrLn $ "Pelo visto a batalha está difícil com " ++ nomeBot ++ ", será necessário um desempate!"
+            mapM_ (\pct -> loadingBar pct >> threadDelay 250000) [0, 10 .. 100] >> putStrLn "\n"
+            ultimaRodada <- iniciarJogo (1, 1)
+            verificaVencedor ultimaRodada jogadorPartida nomeBot
 
 -- Verifica quem foi o vencedor da partida, utiliza a data VencedorPartida
 verificaVencedor :: Bool -> Player -> String -> IO()
@@ -132,7 +149,7 @@ carregarFase :: IO()
 carregarFase = do
     clearScreen
     putStrLn "Carregando fase..."
-    mapM_ (\pct -> loadingBar pct >> (threadDelay 500000)) [0, 10 .. 100] >> putStrLn "\n"
+    mapM_ (\pct -> loadingBar pct >> threadDelay 400000) [0, 10 .. 100] >> putStrLn "\n"
     pressionarTecla
     clearScreen
     carregarFaseJogador
@@ -155,7 +172,7 @@ faseInicial :: IO()
 faseInicial = do
     clearScreen
     jogador <- carregaJogador
-    putStrLn "Nessa fase, você se encontra com o famoso Ruivo, ele vai ter ensinar o funcionamento do jogo"
+    textoFaseInicial
     pressionarTecla
     controllerJogo jogador "O Ruivo"
 
@@ -163,8 +180,7 @@ faseAzul :: IO()
 faseAzul = do
     clearScreen
     jogador <- carregaJogador
-    putStrLn "A bruxa da neve se aproxima, ela é especialista em cartas de neve!"
-    putStrLn "Não restam opções para subir de faixa a não ser derrotando ela!\n"
+    textoFaseAzul
     pressionarTecla
     controllerJogo jogador "Bruxa da Neve"
 
@@ -172,9 +188,7 @@ faseRoxa :: IO()
 faseRoxa = do
     clearScreen
     jogador <- carregaJogador
-    putStrLn "O cavaleiro do mar, que suspeitava da queda da Bruxa, já foi perguntando como você fez esse feito"
-    putStrLn "Você respondeu que somente batalhando para saber"
-    putStrLn $ "Então é assim, " ++ getNome jogador ++ "? Então É HORA DO DUELO!\n"
+    textoFaseRoxa jogador
     pressionarTecla
     controllerJogo jogador "Cavaleiro do Mar"
 
@@ -182,9 +196,7 @@ faseMarrom :: IO()
 faseMarrom = do
     clearScreen
     jogador <- carregaJogador
-    putStrLn "Punhos de fogo apareceu para vingar seu amigo, o cavaleiro"
-    putStrLn "ELE ESTÁ FURIOSO!! TUDO QUE ELE VÊ PELA FRENTE ESTÁ PEGANDO FOGO!!"
-    putStrLn $ getNome jogador ++ ", como você ganhará dele??\n"
+    textoFaseMarrom jogador
     pressionarTecla
     controllerJogo jogador "Punhos de Fogo"
 
@@ -192,13 +204,7 @@ faseFinal :: IO()
 faseFinal = do
     clearScreen
     jogador <- carregaJogador
-    putStrLn "Olhos de Falcão, após ver todos os seus aprendizes derrotados.."
-    putStrLn "não vê outra opção, a não ser lhe mostrar o que é pedir misericórdia"
-    putStrLn $ "Você não vê... " ++ getNome jogador ++ ", o mundo é vasto..."
-    putStrLn "Preocupado com uma única folha, você não verá a árvore."
-    putStrLn "Preocupado com uma única árvore você não perceberá toda a floresta. Não se preocupe com um único ponto."
-    putStrLn "Veja tudo em sua plenitude sem se esforçar."
-    putStrLn "Vamos... vamos ao duelo!\n"
+    textoFaseFinal jogador
     pressionarTecla
     controllerJogo jogador "Olhos de Falcão"
     zerouJogo
@@ -207,10 +213,7 @@ zerouJogo :: IO ()
 zerouJogo = do
     clearScreen
     jogador <- carregaJogador
-    putStrLn "Após derrotar o grande Sensei, você conseguiu alcançar algo que todos desejam..."
-    putStrLn "Você encontrou finalmente o One pi..."
-    putStrLn "A GRANDE MÁSCARA NINJA!"
-    putStrLn ("Após você conquistar esse feito, só restam duas opções, " ++ getNome jogador ++ "...")
+    textoZerou jogador
     pressionarTecla
     putStrLn "1 - Abandonar tudo que você conseguiu até agora e começar uma nova Jornada"
     putStrLn "2 - Finalizar o jogo como um grande ninja"

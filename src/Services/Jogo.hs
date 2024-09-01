@@ -8,6 +8,8 @@ import Types.Carta
 import Services.Batalha
 import Types.Elemento (Elemento(..))
 import System.Console.ANSI (clearScreen)
+import Util.Lib (loadingBar)
+import Control.Concurrent (threadDelay)
 
 data EstadoJogo = EstadoJogo {
     baralhoPlayer :: Baralho,
@@ -21,8 +23,8 @@ data EstadoJogo = EstadoJogo {
 } deriving (Show)
 
 -- Inicia o jogo e executa o loop principal do jogo
-iniciarJogo :: IO Bool
-iniciarJogo = do
+iniciarJogo ::(Int, Int) -> IO Bool
+iniciarJogo (placarJogador, placarInimigo)= do
     -- Passo 1: Gerar e embaralhar Baralhos
     baralhoJogador <- embaralhar novoBaralho
     baralhoInimigo <- embaralhar novoBaralho
@@ -35,12 +37,16 @@ iniciarJogo = do
     let estadoInicial = EstadoJogo baralhoRestanteJogador ([], [], []) baralhoRestanteInimigo ([], [], []) dequeJogador dequeInimigo [] []
 
     -- Iniciar loop do jogo
-    loopJogo estadoInicial
+    loopJogo estadoInicial (placarJogador, placarInimigo)
 
 -- Loop principal do jogo
-loopJogo :: EstadoJogo -> IO Bool
-loopJogo estado = do
+loopJogo :: EstadoJogo -> (Int, Int) ->  IO Bool
+loopJogo estado (placarJogador, placarInimigo)= do
     clearScreen  -- Limpa a tela a cada iteração do loop
+
+
+    putStrLn "Placar:"
+    putStrLn $ show placarJogador ++ " x " ++ show placarInimigo ++ "\n"
 
     -- Exibir elementos acumulados pelo jogador
     putStrLn "Seus elementos acumulados:"
@@ -77,14 +83,14 @@ loopJogo estado = do
         Nothing -> do
             putStrLn "Escolha inválida. Tente novamente."
             pauseScreen
-            loopJogo estado
+            loopJogo estado (placarJogador, placarInimigo)
         Just cartaPlayer -> do
             -- Verifica se a carta jogada é do elemento proibido
             case elementoProibidoPlayer of
                 Just elem | cartaElemento cartaPlayer == elem -> do
                     putStrLn $ "Não é permitido jogar a carta do elemento " ++ show elem ++ " por causa do poder bloqueado pelo jogador."
                     pauseScreen
-                    loopJogo estado
+                    loopJogo estado (placarJogador, placarInimigo)
                 _ -> do
                     -- Atualizar estado do jogo após a jogada do jogador
                     let novaPilhaPlayer = atualizarPilhaPoder cartaPlayer (pilhaPoderPlayer estado)
@@ -135,17 +141,17 @@ loopJogo estado = do
                             if verificaVencedor novoElementosPlayer
                             then do
                                 putStrLn "Você venceu o jogo!"
-                                pauseScreen
+                                mapM_ (\pct -> loadingBar pct >> threadDelay 200000) [0, 10 .. 100] >> putStrLn "\n"
                                 return True
                             else if verificaVencedor novoElementosInimigo
                                 then do
                                     putStrLn "O inimigo venceu o jogo!"
-                                    pauseScreen
+                                    mapM_ (\pct -> loadingBar pct >> threadDelay 200000) [0, 10 .. 100] >> putStrLn "\n"
                                     return False
                                 else do
                                     -- Continuar o loop com o estado atualizado
                                     let novoEstado = EstadoJogo baralhoPlayerRestante novoElementosPlayer baralhoInimigoRestanteFinal novoElementosInimigo novoDequePlayer2 novoDequeInimigo novaPilhaPlayer novaPilhaInimigo
-                                    loopJogo novoEstado
+                                    loopJogo novoEstado (placarJogador, placarInimigo)
 
 -- Função para imprimir os poderes ativos
 printPoderesAtivos :: [Poder] -> [Poder] -> IO ()
