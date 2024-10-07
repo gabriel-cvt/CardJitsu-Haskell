@@ -1,1 +1,1 @@
-player(adawd,branca,1).
+player(gabriel,roxa,1).

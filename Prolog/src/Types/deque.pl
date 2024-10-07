@@ -25,8 +25,7 @@ completar_deque(deque(Cartas), Baralho, deque(NovoDeque), RestoBaralho):-
         completar_deque(deque([Carta|Cartas]), NovoBaralho, deque(NovoDeque), RestoBaralho)
     ;
         NovoDeque = deque(Cartas),
-        RestoBaralho = Baralho
-    ).
+        RestoBaralho = Baralho).
 
 jogar_carta(1, deque([Carta|Resto]), Carta, deque(Resto)).
 
@@ -40,8 +39,9 @@ jogar_carta(Index, _, _, _).
 mostrar_deque(deque(Deque), StringDeque):-
     mostrar_deque(deque(Deque), 1, StringDeque).
 
+% Mostra um deque de cartas
 mostrar_deque(deque([]), _, "").
-mostrar_deque(deque([Carta|Resto]), Index, StringDeque):-
+mostrar_deque(deque([Carta|Resto]), Index, StringDeque) :-
     mostrar_carta(Carta, StringCarta),
     format(atom(StringAtual), '[~d] ~w', [Index, StringCarta]),
     NewIdx is Index + 1,
@@ -51,3 +51,9 @@ mostrar_deque(deque([Carta|Resto]), Index, StringDeque):-
     ; 
         format(atom(StringDeque), '~w\n~w', [StringAtual, StringResto])
     ).
+
+% Exibe o deque centralizando cada linha
+exibir_deque(Deque) :-
+    mostrar_deque(Deque, 1, StringDeque),
+    split_string(StringDeque, "\n", "", Linhas),
+    maplist(saidas:centraliza, Linhas).
