@@ -15,7 +15,7 @@ start_partida(NomeBot) :-
     rodada(1).
 
 rodada(1) :- 
-    jogo:iniciar_jogo(Vencedor),
+    jogo:iniciar_jogo(0,0,Vencedor),
     nome_bot(NomeBot),
     lib: clearScreen,
     
@@ -29,13 +29,13 @@ rodada(1) :-
 
 % Segunda rodada, jogador ganhou a primeira
 rodada(2, ganhou) :-
-    jogo:iniciar_jogo(SegundaRodada),
+    jogo:iniciar_jogo(1,0,SegundaRodada),
 
     (SegundaRodada -> resultado(vitoria) ; rodada(3)).
 
 % Segunda rodada, jogador perdeu a primeira
 rodada(2, perdeu) :-
-    jogo:iniciar_jogo(SegundaRodada),
+    jogo:iniciar_jogo(0,1,SegundaRodada),
     (SegundaRodada -> rodada(3) ; resultado(derrota)).
 
 % Desempate
@@ -49,7 +49,7 @@ rodada(3) :-
     
     lib:loading,
     
-    jogo:iniciar_jogo(Vencedor),
+    jogo:iniciar_jogo(1,1,Vencedor),
     (Vencedor -> resultado(vitoria) ; resultado(derrota)).
 
 % Jogador Ganhou

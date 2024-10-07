@@ -16,4 +16,4 @@ mostrar_poder(bloquear(Elemento), StringPoder):-
     mostrar_elemento(Elemento, NomeElemento),
     format(atom(StringPoder), 'Bloquear [~w]', [NomeElemento]).
 
-atualiza_pilha_poder(Poder, [Poder|Poderes]).
+pega_poder_pilha([Poder|_],Poder).
