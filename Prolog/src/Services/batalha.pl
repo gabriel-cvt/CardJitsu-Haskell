@@ -1,7 +1,7 @@
 :- module(services_batalha, [combate/5]).
 
-:- use_module('./src/Types/carta.pl').
-:- use_module('./src/Types/elemento.pl').
+:- use_module('../Types/carta.pl').
+:- use_module('../Types/elemento.pl').
 
 % Definindo os possíveis vencedores da rodada
 vencedor_rodada(jogador).

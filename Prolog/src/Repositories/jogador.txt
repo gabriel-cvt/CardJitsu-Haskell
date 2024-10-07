@@ -1,1 +1,1 @@
-player(aaa,branca,1).
+player(Miquela,branca,1).
