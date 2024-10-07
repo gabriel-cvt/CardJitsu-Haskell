@@ -3,11 +3,11 @@
 % nome do bot como um fato dinâmico e global, para não precisar passar como parâmetro em toda regra
 :- dynamic nome_bot/1. 
 
-:- use_module('./src/Services/jogo.pl').
 :- use_module('./src/Controller/controleCarregamento.pl').
 :- use_module('./src/Services/salvamentos.pl').
 :- use_module('./src/Types/faixa.pl').
 :- use_module('./src/Services/saidas.pl').
+:- use_module('./src/Services/jogo.pl').
 
 
 start_partida(NomeBot) :-
@@ -15,7 +15,7 @@ start_partida(NomeBot) :-
     rodada(1).
 
 rodada(1) :- 
-    jogo:iniciar_jogo([0, 0], Vencedor),
+    jogo:iniciar_jogo(Vencedor),
     nome_bot(NomeBot),
     lib: clearScreen,
     
@@ -29,13 +29,13 @@ rodada(1) :-
 
 % Segunda rodada, jogador ganhou a primeira
 rodada(2, ganhou) :-
-    jogo:iniciar_jogo([1, 0], SegundaRodada),
+    jogo:iniciar_jogo(SegundaRodada),
 
     (SegundaRodada -> resultado(vitoria) ; rodada(3)).
 
 % Segunda rodada, jogador perdeu a primeira
 rodada(2, perdeu) :-
-    jogo:iniciar_jogo([0, 1], SegundaRodada),
+    jogo:iniciar_jogo(SegundaRodada),
     (SegundaRodada -> rodada(3) ; resultado(derrota)).
 
 % Desempate
@@ -49,7 +49,7 @@ rodada(3) :-
     
     lib:loading,
     
-    jogo:iniciar_jogo([1, 1], Vencedor),
+    jogo:iniciar_jogo(Vencedor),
     (Vencedor -> resultado(vitoria) ; resultado(derrota)).
 
 % Jogador Ganhou

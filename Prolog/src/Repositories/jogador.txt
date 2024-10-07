@@ -1,1 +1,1 @@
-player(Teste,branca,1).
+player(adawd,branca,1).
