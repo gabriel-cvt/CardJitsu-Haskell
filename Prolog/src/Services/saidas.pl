@@ -1,4 +1,4 @@
-:- module(saidas, [printMenu/0, printNovoJogo/0, ler_instrucoes/0, centraliza/1, texto/1]).
+:- module(saidas, [printMenu/0, printNovoJogo/0, ler_instrucoes/0, centraliza/1, texto/1, centraliza_com_barra/2]).
 
 :- use_module('./src/Services/salvamentos.pl').
 :- use_module('./src/Util/lib.pl').
@@ -52,7 +52,18 @@ centraliza_format(Estilo, Texto) :-
     tab(Espacos),
     ansi_format(Estilo, Texto, []).
 
-
+% Alinhado
+centraliza_com_barra(Titulo, Texto) :-
+    tamanho_terminal(Colunas),
+    PosBarra is 30,
+    string_length(Titulo, TituloLength),
+    EspacosTitulo is PosBarra - TituloLength - 2,  % Subtraindo para espaço antes do "|"
+    tab(EspacosTitulo),
+    write('| '), write(Titulo),
+    string_length(Texto, TextLength),
+    EspacosTexto is Colunas - PosBarra - TextLength - TituloLength - 2,
+    tab(EspacosTexto),
+    writeln(Texto).
 
 texto(branca) :- 
     centraliza("O ruivo é a primeira pessoa que aparece no Dojo"),
