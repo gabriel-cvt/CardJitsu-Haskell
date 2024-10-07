@@ -1,0 +1,1 @@
+player(Teste,preta,1).

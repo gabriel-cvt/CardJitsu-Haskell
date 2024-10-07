@@ -1,0 +1,51 @@
+• • • • • • • BEM VINDO AO CARD JITSU! • • • • • • • 
+
+Jogar Card-Jitsu vai ser o começo do seu treinamento ninja. 
+Quanto mais você jogar, mais perto você estará de dominar as cartas e descobrir o seu jeito ninja de ser.
+
+Aqui estão as regras do nosso Dojo:
+
+➤ Você receberá 5 cartas por rodada, o seu objetivo é fazer uma combinação de três cartas. 
+
+➤ Uma batalha é formada por 3 rodadas. Em cada rodada, você e o seu adversário escolhem 
+  uma carta do próprio deque e, após a escolha, as cartas são reveladas ao mesmo tempo. 
+
+➤ As cartas possuem elementos e valores, veja como funcionam:
+
+    O primeiro embate será com elementos, caso você e o seu
+    adversário joguem o mesmo elemento, o desempate será
+    entre os valores das cartas.
+
+    ELEMENTOS:
+    🔥 Fogo : Fogo derrete Neve!
+    💧 Água : Água apaga Fogo!
+    🧊 Neve : Neve congela Água!
+
+    VALORES:
+    Os valores vão de 1 a 12, quem tiver a carta
+    com o maior valor ganha a rodada.
+
+    ❗Caso ocorra a coincidência de jogarem cartas
+      idênticas é declarado empate e nenhum dos 
+      dois jogadores ganha a partida.
+
+➤ CARTAS DE PODER: para cada elemento existem 12 cartas, sendo 4 delas cartas de poder, elas
+  funcionam assim:
+
+    ➤ Bloqueia cartas de elemento oposto do seu adversário na próxima rodada.
+    ➤ Aumenta o valor numérico +2 da sua carta na próxima rodada.
+    ➤ Diminui o valor numérico -2 da carta do seu adversário na próxima rodada.
+    ➤ O valor numérico para vitória é invertido. As cartas de menor valor obterão vantagem.
+
+➤ Ao final de cada rodada, o vencedor dela receberá o elemento da carta que o fez ganhar. 
+O primeiro jogador que juntar três elementos, em uma das combinações específicas, ganhará o jogo e subirá de nível.
+
+    COMBINAÇÕES PARA A VITÓRIA:
+    ➤ Os três elementos distindos (🔥, 💧, 🧊)
+    ➤ Ou três elementos idênticos (EX: 🔥, 🔥, 🔥)
+
+➤ FAIXAS: existem cinco faixas (branca, azul, roxa, marrom e preta), você iniciará na faixa branca
+  e irá subindo de faixa a medida que ganhar as batalhas. Ao atingir a faixa preta você poderá
+  batalhar com o Sensei e conquistar a tão sonhada Máscara Ninja! 🥷
+
+• • • • • • • BOA SORTE! • • • • • • • 
