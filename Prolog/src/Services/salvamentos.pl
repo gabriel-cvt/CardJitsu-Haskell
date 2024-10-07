@@ -1,4 +1,4 @@
-:- module(salvamentos, [salvar_jogador/1, carregar_jogador/1, existe_progresso/1, carregar_instrucoes/1]).
+:- module(salvamentos, [salvar_jogador/1, carregar_jogador/1, existe_progresso/1, carregar_instrucoes/1, up_jogador_partida/1]).
 
 :- use_module(library(readutil)).
 
@@ -42,5 +42,5 @@ read_lines(Stream, [Linha|Linhas]) :-
 up_jogador_partida(JogadorAtualizado) :-
     carregar_jogador(Jogador),
     faixa:up_faixa(Jogador, JogadorProxFaixa),
-    player:up_progresso(JogadorProxFaixa, JogadorAtualizado)
+    player:up_progresso(JogadorProxFaixa, JogadorAtualizado),
     salvamentos:salvar_jogador(JogadorAtualizado).

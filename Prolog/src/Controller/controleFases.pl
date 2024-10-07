@@ -38,10 +38,8 @@ fase_jogador(preta) :-
 fase_jogador(mestre) :-
     lib:clearScreen,
     saidas:texto(final),
-    lib:pressionar_tecla,
-    saidas:texto(zerou),
+    lib:input_to_number(Escolha),
     escolha_final(Escolha).
-
 
 escolha_final(1) :-
     lib:clearScreen,
@@ -50,11 +48,13 @@ escolha_final(1) :-
     controle_carregamento:novo_jogo.
 
 escolha_final(2) :-
-    saidas:centraliza("Bem, o caminho que você fez não foi fácil.\nApós tantas batalhas, chegou o momento de descansar\n"),
+    saidas:centraliza("Bem, o caminho que você fez não foi fácil."),
+    saidas:centraliza("Após tantas batalhas, chegou o momento de descansar\n"),
     lib:pressionar_tecla,
     halt(0).
 
 escolha_final(_) :-
-    saidas:centraliza("Pelo visto a jornada foi tão desafiadora que confundiu suas teclas...\nEscolha novamente!\n"),
-    lib:pressionar_tecla
+    saidas:centraliza("Pelo visto a jornada foi tão desafiadora que confundiu suas teclas..."),
+    saidas:centraliza("Escolha novamente!\n"),
+    lib:pressionar_tecla,
     controle_carregamento:fase_jogador(mestre).

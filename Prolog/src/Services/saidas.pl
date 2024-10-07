@@ -113,8 +113,7 @@ texto(final) :-
     centraliza("A GRANDE MÁSCARA NINJA!"),
     sleep(0.75),
     centraliza("Após você conquistar esse feito, só restam duas opções...\n"),
+    sleep(0.75),
+    centraliza_format([bold, fg(blue)], "(1) Abandonar tudo que você conseguiu até agora e começar uma nova Jornada"), nl,
+    centraliza_format([bold, fg(blue)], "(2) Finalizar o jogo como um grande ninja"),
     sleep(0.75).
-
-texto(zerou) :- 
-    centraliza("1 - Abandonar tudo que você conseguiu até agora e começar uma nova Jornada"),
-    centraliza("2 - Finalizar o jogo como um grande ninja\n").
