@@ -9,9 +9,9 @@ poder(menos_dois).
 poder(inverte).
 poder(bloquear(Elemento)) :- elemento(Elemento).
 
-mostrar_poder(mais_dois, 'Mais Dois').
-mostrar_poder(menos_dois, 'Menos Dois').
-mostrar_poder(inverte, 'Inverte').
+mostrar_poder(mais_dois, 'Mais Dois', [fg(lime)]).
+mostrar_poder(menos_dois, 'Menos Dois', [fg(red)]).
+mostrar_poder(inverte, 'Inverte', [fg(yellow)]).
 mostrar_poder(bloquear(Elemento), StringPoder):-
     mostrar_elemento(Elemento, NomeElemento),
     format(atom(StringPoder), 'Bloquear [~w]', [NomeElemento]).

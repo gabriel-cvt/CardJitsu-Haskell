@@ -55,7 +55,7 @@ centraliza_format(Estilo, Texto) :-
 % Alinhado
 centraliza_com_barra(Titulo, Texto) :-
     tamanho_terminal(Colunas),
-    PosBarra is 50,
+    PosBarra is 75,
     string_length(Titulo, TituloLength),
     EspacosTitulo is PosBarra - TituloLength - 2,  % Subtraindo para espaço antes do "|"
     tab(EspacosTitulo),

@@ -11,6 +11,8 @@ prioridade_elemento(neve, agua).
 prioridade_elemento(agua, fogo).
 prioridade_elemento(_, _):- false.
 
-mostrar_elemento(fogo, 'FOGO').
-mostrar_elemento(agua, 'ÁGUA').
-mostrar_elemento(neve, 'NEVE').
+mostrar_elemento(fogo, 'FOGO', [fg(red)]).
+mostrar_elemento(agua, 'ÁGUA', [fg(blue)]).
+mostrar_elemento(neve, 'NEVE', [fg(white)]).
+
+

@@ -32,10 +32,10 @@ iniciar_jogo(Jogador, Inimigo, Vencedor) :-
 
 loop_jogo(Vencedor) :-
     retract(estado_jogo(Jogador, Inimigo, BaralhoJogador, BaralhoInimigo, DequeJogador, DequeInimigo, ElementosJogador, ElementosInimigo, PilhaJogador, PilhaInimigo)),
-    writeln("Placar: "),
-    write(Jogador), write(" X "), write(Inimigo), nl,
+    
+    print_estado_jogo,
 
-    writeln("Escolha uma carta para jogar [1-5]:"),
+    saidas:centraliza_format([bold, fg(blue)], "Escolha uma carta para jogar [1-5]:"),
     input_to_number(Index),
     Index > 0, Index < 6,
     
@@ -58,7 +58,7 @@ loop_jogo(Vencedor) :-
             NovoElementosJogador = [_, _, [neve|ElementosJogador]]
         ),
         (checa_vencedor(NovoElementosJogador) -> Vencedor is 1, 
-            writeln("Fim do jogo, jogador venceu!")
+            saidas:centraliza("Fim do jogo, jogador venceu!")
         ; 
         assertz(estado_jogo(Jogador, Inimigo, NewBaralhoJogador, NewBaralhoInimigo, NewDequeJogador, NewDequeInimigo, NovoElementosJogador, ElementosInimigo, [PoderJogador|PilhaJogador], [PoderInimigo|PilhaInimigo])),
         loop_jogo(Vencedor)
@@ -87,3 +87,58 @@ checa_vencedor([Fogo, Agua, Neve]) :-
     length(Agua, 3)
     ;
     length(Neve, 3).
+
+
+
+print_estado_jogo :-
+    retract(estado_jogo(Jogador, Inimigo,
+                        BaralhoJogador, BaralhoInimigo,
+                        DequeJogador, DequeInimigo,
+                        ElementosJogador, ElementosInimigo,
+                        PilhaJogador, PilhaInimigo)),
+    lib:clearScreen,
+    exibir_placar(Jogador, Inimigo),
+    exibir_elementos(ElementoJogador, ElementoInimigo),
+    print_poderes_ativos(PilhaJogador, PilhaInimigo), nl.
+
+exibir_elementos(ElementosJogador, ElementosInimigo) :-
+    saidas:centraliza_format([bold, fg(green)], "Seus elementos acumulados:"), nl,
+    print_elementos_acumulados(ElementosJogador), nl, nl,
+    saidas:centraliza_format([bold, fg(yellow)], "Elementos acumulados pelo inimigo:"), nl,
+    print_elementos_acumulados(ElementosInimigo), nl,
+    nl.
+
+print_elementos_acumulados([]) :-
+    centraliza("Nenhum elemento acumulado.").
+print_elementos_acumulados([[Fogo | _], [Agua | _], [Neve | _]]) :-
+    exibir_quantidade_com_cor(fogo, Fogo),
+    exibir_quantidade_com_cor(agua, Agua),
+    exibir_quantidade_com_cor(neve, Neve).
+
+
+print_poderes_ativos(PoderesJogador, PoderesInimigo) :-
+    saidas:centraliza_format([bold, fg(cyan)], "Poderes Ativos do Jogador:"), nl,
+    print_lista_poderes(PoderesPlayer), nl, nl,
+    saidas:centraliza_format([bold, fg(red)], "Poderes Ativos do Inimigo:"), nl,
+    print_lista_poderes(PoderesInimigo),nl.
+
+
+print_lista_poderes([]) :-
+    saidas:centraliza("Nenhum poder ativo."), nl.
+print_lista_poderes([Poder | Resto]) :-
+    carta:mostrar_poder(Poder, NomePoder),
+    saidas:centraliza(NomePoder),
+    print_lista_poderes(Resto).
+
+exibir_quantidade_com_cor(_, 0) :- !.
+exibir_quantidade_com_cor(Elemento, Quantidade) :-
+    mostrar_elemento(Elemento, NomeElemento, Cor),
+    string_concat(NomeElemento, ": ", Prefixo),
+    number_string(Quantidade, QuantidadeString),
+    string_concat(Prefixo, QuantidadeString, TextoCompleto),
+    centraliza_format(Cor, TextoCompleto).
+
+exibir_placar(PlacarJogador, PlacarInimigo) :-
+    format(string(PlacarTexto), "Placar: ~d x ~d", [PlacarJogador, PlacarInimigo]),
+    saidas:centraliza(PlacarTexto),
+    nl.
