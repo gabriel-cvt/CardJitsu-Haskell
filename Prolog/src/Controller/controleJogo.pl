@@ -11,7 +11,7 @@
 
 
 start_partida(NomeBot) :-
-    assertz(nome_bot(NomeBot)),
+    assert(nome_bot(NomeBot)),
     rodada(1).
 
 rodada(1) :- 
