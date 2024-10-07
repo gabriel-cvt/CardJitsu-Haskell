@@ -1,6 +1,7 @@
 :- module(faixa, [faixa/1, get_faixa/2, up_faixa/2]).
 
 :- use_module('src/Types/player.pl').
+:- use_module(library(ansi_term)).
 
 faixa(branca).
 faixa(azul).
@@ -32,27 +33,29 @@ verificar_faixa :-
     exibir_faixa(FaixaAtual, FaixasAnteriores, FaixasRestantes).
 
 exibir_faixa(branca, _, FaixasRestantes) :-
-    write("Você ainda não alcançou outras faixas. Vamos começar a sua jornada ninja!\n"),
-    write("Faixas anteriores:\n ➤ Nenhuma\n"),
-    write("Faixas restantes:\n"),
+    ansi_format([bold,fg(white)], '~w', ["Você ainda não alcançou outras faixas. Vamos começar a sua jornada ninja!\n"]),
+    ansi_format([fg(blue)], '~w', ["\nFaixas anteriores:\n"]),
+    write(" ➤ Nenhuma"),
+    ansi_format([fg(blue)], '~w', ["\nFaixas restantes:\n"]),
     maplist(exibir_faixa_restante, FaixasRestantes).
 
 exibir_faixa(preta, FaixasAnteriores, _) :-
-    write("Parabéns! Você conquistou a faixa preta!\n"),
-    write("Faixas anteriores:\n"),
+    ansi_format([bold,fg(white)], '~w', ["Parabéns! Você conquistou a faixa preta!\n"]),
+    ansi_format([fg(blue)], '~w', ["\nFaixas anteriores:\n"]),
     maplist(exibir_faixa_anterior, FaixasAnteriores),
-    write("Objetivo restante:\n ➤ Desafiar o sensei e virar um Mestre ninja\n\n").
+    ansi_format([fg(blue)], '~w', ["\nObjetivo restante:\n"]),
+    write(" ➤ Desafiar o sensei e virar um Mestre ninja\n\n").
 
 exibir_faixa(mestre, FaixasAnteriores, _) :-
-    write("Parabéns! Você é um grande mestre Ninja!\n"),
-    write("Faixas anteriores:\n"),
+    ansi_format([bold,fg(white)], '~w', ["Parabéns! Você é um grande mestre Ninja!\n"]),
+    ansi_format([fg(blue)], '~w', ["\nFaixas anteriores:\n"]),
     maplist(exibir_faixa_anterior, FaixasAnteriores).
 
 exibir_faixa(FaixaAtual, FaixasAnteriores, FaixasRestantes) :-
-    format("Você está na faixa: ~s~n", [FaixaAtual]),
-    write("Faixas anteriores:\n"),
+    format("Você está na faixa: ~s~n\n", [FaixaAtual]),
+    ansi_format([fg(blue)], '~w', ["\nFaixas anteriores:\n"]),
     maplist(exibir_faixa_anterior, FaixasAnteriores),
-    write("Faixas restantes:\n"),
+    ansi_format([fg(blue)], '~w', ["\nFaixas restantes:\n"]),
     maplist(exibir_faixa_restante, FaixasRestantes).
 
 exibir_faixa_anterior(Faixa) :-

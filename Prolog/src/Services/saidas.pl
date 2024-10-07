@@ -4,7 +4,7 @@
 :- use_module('./src/Util/lib.pl').
 :- use_module(library(sleep)).
 :- use_module(library(ansi_term)).
-
+:- use_module(library(process)).
 
 printMenu :-
     centraliza_format([bold, fg(yellow)], "          ___                   _         __                      __       _        __ \n"),
@@ -65,31 +65,43 @@ centraliza_com_barra(Titulo, Texto) :-
     tab(EspacosTexto),
     writeln(Texto).
 
+centraliza_com_cor(TextoAntes, PalavraColorida, TextoDepois, Estilo) :-
+    atomic_list_concat([TextoAntes, PalavraColorida, TextoDepois], " ", TextoCompleto),
+    tamanho_terminal(Colunas),
+    string_length(TextoCompleto, TextLength),
+    Espacos is (Colunas - TextLength) // 2,
+    tab(Espacos),
+    write(TextoAntes),  
+    ansi_format(Estilo, PalavraColorida, []),  
+    write(TextoDepois), 
+    nl.  
+
 texto(branca) :- 
-    centraliza("O ruivo é a primeira pessoa que aparece no Dojo"),
+    centraliza_format([bold, fg(white)], "O ruivo é a primeira pessoa que aparece no Dojo"), nl,
     sleep(0.75),
-    centraliza("Ruivo: Você é novo por aqui, não é?"),
+    centraliza_com_cor("", "Ruivo", ": você é novo por aqui, não é?", [bold, fg(red)]),
     sleep(0.75),
-    centraliza("Ruivo: Vamos uma duelo para você entender como é o CardJitsu\n"),
+    centraliza_com_cor("", "Ruivo", ": vamos a um duelo para você entender como é o CardJitsu\n", [bold, fg(red)]),
     sleep(0.75).
 
 
 texto(azul) :-
-    centraliza("A bruxa da Neve se aproxima de forma sorrateira após você ganhar do Ruivo"),
+    centraliza_format([bold, fg(white)], "A bruxa da Neve se aproxima de forma sorrateira após você ganhar do Ruivo"), nl,
     sleep(0.75),
-    centraliza("Bruxa da Neve: O ruivo é mesmo um bobalhão, mas de minhas garras gélidas você não escapará!"),
+    centraliza_com_cor("", "Bruxa da Neve", ": O ruivo é mesmo um bobalhão, mas de minhas garras gélidas você não escapará!", [bold, fg(cyan)]),
     sleep(0.75),
     centraliza("Não restam opções para subir de faixa no dojo a não ser derrotando ela!\n"),
     sleep(0.75).
 
 texto(roxa) :-
-    centraliza("Cavaleiro do mar: para derrotar a bruxa... requer um poder imenso"),
+    centraliza_com_cor("", "Cavaleiro do Mar", ": para derrotar a bruxa... requer um poder imenso", [bold, fg(blue)]),
     sleep(0.75),
     centraliza("Como você conseguiu fazer isso, jovem ninja?"),
     sleep(0.75),
     centraliza("Você respondeu que somente batalhando para saber disso"),
     sleep(0.75),
-    centraliza("Cavaleiro do mar: Então é assim ? É HORA DO DUELO!\n"),
+    centraliza_com_cor("", "Cavaleiro do Mar", ": Então é assim ?\n", [bold, fg(blue)]),
+    centraliza_format([bold, fg(white)], "É HORA DO DUELO!\n"),
     sleep(0.75).
 
 texto(marrom) :-
@@ -97,7 +109,7 @@ texto(marrom) :-
     sleep(0.75),
     centraliza("Ele está devastado! Qualquer coisa ao redor dele está em chamas!!"),
     sleep(0.75),
-    centraliza("Punhos de Fogo: Não me importa quem é você ou o que você quer, minhas chamas irão te exterminar"),
+    centraliza_com_cor("", "Punhos de Fogo", ": Não me importa quem é você ou o que você quer, minhas chamas irão te exterminar", [bold, fg(red)]),
     sleep(0.75),
     centraliza("Jovem ninja, como você ganhará dele??\n"),
     sleep(0.75).
@@ -105,7 +117,7 @@ texto(marrom) :-
 texto(preta):- 
     centraliza("Olhos de Falcão, após ver todos os seus aprendizes derrotados, chegou em você para conversar"),
     sleep(0.75),
-    centraliza("Olhos de Falcão: escute o que tenho a dizer..."),
+    centraliza_com_cor("", "Olhos de Falcão", ": escute o que tenho a dizer...", [bold, fg(yellow)]),
     sleep(0.75),
     centraliza("Todas as pessoas verdadeiramente fortes são gentis."),
     sleep(0.75),
@@ -113,7 +125,7 @@ texto(preta):-
     sleep(0.75),
     centraliza("Chega de palavras agora, chegou a hora..."),
     sleep(0.75),
-    centraliza("É HORA DO DUELO!\n"),
+    centraliza_format([bold, fg(white)], "É HORA DO DUELO!\n"),
     sleep(0.75).
 
 texto(final) :- 
@@ -121,7 +133,7 @@ texto(final) :-
     sleep(0.75),
     centraliza("Você encontrou finalmente o One pi..."),
     sleep(0.75),
-    centraliza("A GRANDE MÁSCARA NINJA!"),
+    centraliza_format([bold, fg(yellow)], "A GRANDE MÁSCARA NINJA!\n"),
     sleep(0.75),
     centraliza("Após você conquistar esse feito, só restam duas opções...\n"),
     sleep(0.75),
