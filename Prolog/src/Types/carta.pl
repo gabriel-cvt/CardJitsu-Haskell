@@ -1,9 +1,9 @@
 :- module(carta, [poder/1, 
                   mostrar_poder/2, 
                   carta/3, 
-                  mostrar_carta/4]).
+                  mostrar_carta/2]).
                 
-:- use_module('./src/Types/elemento.pl').
+:- use_module('elemento.pl').
 
 poder(null).
 poder(mais_dois).
@@ -16,14 +16,14 @@ mostrar_poder(menos_dois, 'Menos Dois').
 mostrar_poder(inverte, 'Inverte').
 mostrar_poder(bloquear(Elemento), StringPoder):-
     mostrar_elemento(Elemento, NomeElemento),
-    format(atom(StringPoder), 'Bloquear [~w]', [NomeElemento]),
+    format(atom(StringPoder), 'Bloquear [~w]', [NomeElemento]).
 
 carta(Elemento, Valor, Poder):-
     elemento(Elemento),
     integer(Valor),
     poder(Poder).
 
-mostrar_carta(Elemento, Valor, Poder, StringCarta):-
+mostrar_carta(carta(Elemento, Valor, Poder), StringCarta):-
     mostrar_elemento(Elemento, NomeElemento),
     number_string(Valor, ValorStr),
     format(atom(Base), '(~w : ~s)', [NomeElemento, ValorStr]),

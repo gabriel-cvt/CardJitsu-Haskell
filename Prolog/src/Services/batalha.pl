@@ -9,7 +9,7 @@ vencedor_rodada(adversario).
 vencedor_rodada(nenhum).
 
 % Combate
-combate(Carta1, Carta2, Poder1, Poder2, Vencedor) :-
+combate(carta(Carta1), carta(Carta2), poder(Poder1), poder(Poder2), Vencedor) :-
     combate_por_elemento(Carta1, Carta2, VencedorElementos),
     ( VencedorElementos == jogador ->
         Vencedor = jogador
@@ -44,4 +44,3 @@ aplicar_poder(Valor, mais_dois, _, ValorAjustado) :- ValorAjustado is Valor + 2.
 aplicar_poder(Valor, menos_dois, _, ValorAjustado) :- ValorAjustado is Valor + 2.
 aplicar_poder(Valor, inverte, _, ValorAjustado) :- ValorAjustado is Valor * -1.
 aplicar_poder(Valor, _, inverte, ValorAjustado) :- ValorAjustado is Valor * -1.
-
