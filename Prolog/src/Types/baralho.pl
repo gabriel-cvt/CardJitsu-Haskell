@@ -15,13 +15,7 @@ gerar_cartas_elemento(Elemento, Cartas):-
 gerar_cartas_elemento(_, Valor, []):- Valor > 12.
 gerar_cartas_elemento(Elemento, Valor, [Carta | Cartas]):-
     Valor =< 12,
-    (   Valor =< 8 -> Poder = null
-    ;   Valor = 9 -> Poder = mais_dois
-    ;   Valor = 10 -> Poder = menos_dois
-    ;   Valor = 11 -> Poder = bloquear(Elemento)
-    ;   Valor = 12 -> Poder = inverte
-    ),
-    Carta = carta(Elemento, Valor, Poder),
+    Carta = carta(Elemento, Valor),
     ProxValor is Valor + 1,
     gerar_cartas_elemento(Elemento, ProxValor, Cartas).
 
