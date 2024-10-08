@@ -1,24 +1,17 @@
-:- module(carta, [carta/3, 
-                  mostrar_carta/2]).
+:- module(carta, [carta/2, 
+                  mostrar_carta/2,
+                  limitar_valor/2]).
                 
 :- use_module('elemento.pl').
-:- use_module('poder.pl').
 
-carta(Elemento, Valor, Poder):-
+carta(Elemento, Valor):-
     elemento(Elemento),
-    integer(Valor),
-    poder(Poder).
+    integer(Valor).
 
-mostrar_carta(carta(Elemento, Valor, Poder), StringCarta):-
+mostrar_carta(carta(Elemento, Valor), StringCarta):-
     mostrar_elemento(Elemento, NomeElemento),
     number_string(Valor, ValorStr),
-    format(atom(Base), '(~w : ~s)', [NomeElemento, ValorStr]),
-    (Poder = null ->
-        StringCarta = Base
-    ;
-        mostrar_poder(Poder, NomePoder),
-        format(atom(StringCarta), '~s -> ~w', [Base, NomePoder])
-    ).
+    format(atom(StringCarta), '(~w : ~s)', [NomeElemento, ValorStr]).
 
 limitar_valor(Valor, 12):- Valor > 12.
 limitar_valor(Valor, 1):- Valor < 1.
