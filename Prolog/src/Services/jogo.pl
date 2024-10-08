@@ -41,49 +41,48 @@ loop_jogo(Vencedor):-
     
     print_estado_jogo,
 
-    input_to_number(Index),
+    lib:input_to_number(Index),
 
     (Index < 1; Index > 5 ->
         writeln("Entrada inválida. Tente novamente."),
         loop_jogo(Vencedor) 
-    ),
-    
-    deque:jogar_carta(Index, DequeJogador, CartaJogador, DequeJogador2),
-    baralho:pegar_carta(BaralhoInimigo, CartaInimigo, newBaralhoInimigo),
-    
-    deque:completar_deque(DequeJogador2, BaralhoJogador, NewDequeJogador, NewBaralhoJogador),
-    mostrar_deque(DequeJogador3, StringDeque),
-    writeln(StringDeque),
+    ;
+        deque:jogar_carta(Index, DequeJogador, CartaJogador, DequeJogador2),
+        baralho:pegar_carta(BaralhoInimigo, CartaInimigo, NewBaralhoInimigo),
+        
+        deque:completar_deque(DequeJogador2, BaralhoJogador, NewDequeJogador, NewBaralhoJogador),
 
-    deque:completar_deque(DequeJogador2, BaralhoJogador, NewDequeJogador, NewBaralhoJogador),
+        mostrar_deque(NewDequeJogador, StringDeque),
+        writeln(StringDeque),
 
-    CartaJogador = carta(EleJogador,_),
-    CartaInimigo = carta(EleInimigo,_),
-    batalha:combate(CartaJogador, CartaInimigo, Ganhador),
+        CartaJogador = carta(EleJogador,_),
+        CartaInimigo = carta(EleInimigo,_),
+        batalha:combate(CartaJogador, CartaInimigo, Ganhador),
 
-    writeln("Ganhador do combate: "), writeln(Ganhador),
+        writeln("Ganhador do combate: "), writeln(Ganhador),
 
-    (Ganhador = 1 ->
-        update_elementos(EleJogador, ElementosJogador, NewElementosJogador),
-        (checa_vencedor(NewElementosJogador) ->
-            Vencedor is 1, !
-        ;
-            assertz(estado_jogo(Jogador, Inimigo,
-                                NewBaralhoJogador, NewBaralhoInimigo,
-                                NewDequeJogador, NewDequeInimigo,
-                                NewElementosJogador, ElementosInimigo)),
-            loop_jogo(Vencedor)
-        )
-    ; Ganhador = 2 ->
-        update_elementos(EleInimigo, ElementosInimigo, NewElementosInimigo),
-        (checa_vencedor(NewElementosInimigo) ->
-            Vencedor is 2, !
-        ;
-            assertz(estado_jogo(Jogador, Inimigo,
-                                NewBaralhoJogador, NewBaralhoInimigo,
-                                NewDequeJogador, NewDequeInimigo,
-                                ElementosJogador, NewElementosInimigo)),
-            loop_jogo(Vencedor)
+        (Ganhador = 1 ->
+            update_elementos(EleJogador, ElementosJogador, NewElementosJogador),
+            (checa_vencedor(NewElementosJogador) ->
+                Vencedor is 1, !
+            ;
+                assertz(estado_jogo(Jogador, Inimigo,
+                                    NewBaralhoJogador, NewBaralhoInimigo,
+                                    NewDequeJogador, DequeInimigo,
+                                    NewElementosJogador, ElementosInimigo)),
+                loop_jogo(Vencedor)
+            )
+        ; Ganhador = 2 ->
+            update_elementos(EleInimigo, ElementosInimigo, NewElementosInimigo),
+            (checa_vencedor(NewElementosInimigo) ->
+                Vencedor is 2, !
+            ;
+                assertz(estado_jogo(Jogador, Inimigo,
+                                    NewBaralhoJogador, NewBaralhoInimigo,
+                                    NewDequeJogador, DequeInimigo,
+                                    ElementosJogador, NewElementosInimigo)),
+                loop_jogo(Vencedor)
+            )
         )
     ).
 
